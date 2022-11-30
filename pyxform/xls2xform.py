@@ -29,7 +29,12 @@ def get_xml_path(path):
 
 
 def xls2xform_convert(
-    xlsform_path, xform_path, validate=True, pretty_print=True, enketo=False
+    xlsform_path,
+    xform_path,
+    validate=True,
+    pretty_print=True,
+    enketo=False,
+    annotate=False,
 ):
     warnings = []
 
@@ -45,6 +50,7 @@ def xls2xform_convert(
         pretty_print=pretty_print,
         warnings=warnings,
         enketo=enketo,
+        annotate=annotate,
     )
     output_dir = os.path.split(xform_path)[0]
     if has_external_choices(json_survey):
@@ -101,6 +107,12 @@ def _create_parser():
         default=False,
         help="Print XML forms with collapsed whitespace instead of pretty-printed.",
     )
+    parser.add_argument(
+        "--annotate",
+        action="store_true",
+        default=False,
+        help="Print XML forms with annotated label.",
+    )
     return parser
 
 
@@ -150,6 +162,7 @@ def main_cli():
                 validate=args.odk_validate,
                 pretty_print=args.pretty_print,
                 enketo=args.enketo_validate,
+                annotate=args.annotate,
             )
 
             response["code"] = 100
@@ -173,6 +186,7 @@ def main_cli():
                 validate=args.odk_validate,
                 pretty_print=args.pretty_print,
                 enketo=args.enketo_validate,
+                annotate=args.annotate,
             )
         except EnvironmentError as e:
             # Do not crash if 'java' not installed

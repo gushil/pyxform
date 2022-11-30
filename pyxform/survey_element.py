@@ -71,6 +71,7 @@ class SurveyElement(dict):
         "action": str,
         "list_name": str,
         "trigger": str,
+        "annotated_label": str,
     }
 
     def _default(self):
@@ -393,6 +394,12 @@ class SurveyElement(dict):
             event=triggering_events,
         )
 
+    def get_annotated_label(self):
+        annotated_label = self.label
+        for val in ["type", "name"]:
+            annotated_label += " [{}: {}]".format(val, getattr(self, val))
+        return annotated_label
+
     # XML generating functions, these probably need to be moved around.
     def xml_label(self):
         if self.needs_itext_ref():
@@ -402,7 +409,10 @@ class SurveyElement(dict):
             return node("label", ref=ref)
         else:
             survey = self.get_root()
-            label, output_inserted = survey.insert_output_values(self.label, self)
+            output_label = self.label
+            if survey.annotated_label:
+                output_label = self.get_annotated_label()
+            label, output_inserted = survey.insert_output_values(output_label, self)
             return node("label", label, toParseString=output_inserted)
 
     def xml_hint(self):

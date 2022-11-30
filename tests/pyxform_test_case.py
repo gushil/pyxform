@@ -99,6 +99,7 @@ class PyxformMarkdown:
         survey.name = kwargs.get("name", "data")
         survey.title = kwargs.get("title")
         survey.id_string = kwargs.get("id_string")
+        survey.annotated_label = kwargs.get("annotate", False)
 
         return survey
 

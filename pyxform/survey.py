@@ -1060,7 +1060,13 @@ class Survey(Section):
 
     # pylint: disable=too-many-arguments
     def print_xform_to_file(
-        self, path=None, validate=True, pretty_print=True, warnings=None, enketo=False
+        self,
+        path=None,
+        validate=True,
+        pretty_print=True,
+        warnings=None,
+        enketo=False,
+        annotate=False,
     ):
         """
         Print the xForm to a file and optionally validate it as well by
@@ -1070,6 +1076,12 @@ class Survey(Section):
             warnings = []
         if not path:
             path = self._print_name + ".xml"
+
+        if annotate:
+            self.annotated_label = True
+        else:
+            self.annotated_label = False
+
         try:
             with codecs.open(path, mode="w", encoding="utf-8") as file_obj:
                 if pretty_print:
@@ -1098,7 +1110,14 @@ class Survey(Section):
                     + "Learn more: http://xlsform.org#multiple-language-support"
                 )
 
-    def to_xml(self, validate=True, pretty_print=True, warnings=None, enketo=False):
+    def to_xml(
+        self,
+        validate=True,
+        pretty_print=True,
+        warnings=None,
+        enketo=False,
+        annotate=False,
+    ):
         """
         Generates the XForm XML.
         validate is True by default - pass the XForm XML through ODK Validator.
@@ -1120,6 +1139,7 @@ class Survey(Section):
                 pretty_print=pretty_print,
                 warnings=warnings,
                 enketo=enketo,
+                annotate=annotate,
             )
         finally:
             if os.path.exists(tmp.name):
