@@ -397,7 +397,16 @@ class SurveyElement(dict):
     def get_annotated_label(self):
         annotated_label = self.label
         for val in ["type", "name"]:
-            annotated_label += " [{}: {}]".format(val, getattr(self, val))
+            annotated_value = "{}: {}".format(val, getattr(self, val))
+
+            # Prepend all underscores with a black slash
+            underscore_str = "_"
+            backslash_str = "\\"
+            annotated_value = (backslash_str + underscore_str).join(
+                annotated_value.split(underscore_str)
+            )
+
+            annotated_label += " [{}]".format(annotated_value)
         return annotated_label
 
     # XML generating functions, these probably need to be moved around.

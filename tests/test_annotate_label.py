@@ -32,3 +32,16 @@ class AnnotateLabelTest(PyxformTestCase):
             """,
             xml__contains=["<label>Name</label>"],
         )
+
+    def test_annotated_label_with_underscore(self):
+        """Test annotated label."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |            |       |
+            |        | type   | name       | label |
+            |        | string | field_name | Name  |
+            """,
+            xml__contains=[r"<label>Name [type: string] [name: field\_name]</label>"],
+            annotate=True,
+        )
