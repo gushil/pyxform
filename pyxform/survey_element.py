@@ -396,7 +396,7 @@ class SurveyElement(dict):
 
     def get_annotated_label(self):
         annotated_label = self.label
-        for val in ["type", "name"]:
+        for idx, val in enumerate(["type", "name"]):
             annotated_value = "{}: {}".format(val, getattr(self, val))
 
             # Prepend all underscores with a black slash
@@ -405,7 +405,8 @@ class SurveyElement(dict):
             annotated_value = (backslash_str + underscore_str).join(
                 annotated_value.split(underscore_str)
             )
-
+            if idx == 0:
+                annotated_label += "\n"
             annotated_label += " [{}]".format(annotated_value)
         return annotated_label
 

@@ -17,7 +17,8 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__contains=["<label>Name [type: string] [name: name]</label>"],
+            #xml__contains=["<label>Name\n", "[type: string] [name: name]</label>"],
+            xml__contains=["[type: string] [name: name]</label>"],
             annotate=True,
         )
 
@@ -33,8 +34,21 @@ class AnnotateLabelTest(PyxformTestCase):
             xml__contains=["<label>Name</label>"],
         )
 
+    def test_annotated_label_contains_newline(self):
+        """Test annotated label contains newline after user defined label."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |          |       |
+            |        | type   |   name   | label |
+            |        | string |   name   | Name  |
+            """,
+            xml__contains=["<label>Name\n"],
+            annotate=True,
+        )
+
     def test_annotated_label_with_underscore(self):
-        """Test annotated label."""
+        """Test annotated label with underscore."""
         self.assertPyxformXform(
             name="data",
             md="""
@@ -42,6 +56,6 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   | name       | label |
             |        | string | field_name | Name  |
             """,
-            xml__contains=[r"<label>Name [type: string] [name: field\_name]</label>"],
+            xml__contains=[r"[type: string] [name: field\_name]</label>"],
             annotate=True,
         )
