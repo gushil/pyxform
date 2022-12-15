@@ -431,7 +431,12 @@ class SurveyElement(dict):
         else:
             survey = self.get_root()
             output_label = self.label
-            if len(survey.annotated_fields) > 0:
+            # Annotate fields in annotated_fields
+            # except for choices
+            if len(survey.annotated_fields) > 0 and self.parent.type not in [
+                "select one",
+                "select multiple",
+            ]:
                 output_label = self.get_annotated_label()
             label, output_inserted = survey.insert_output_values(output_label, self)
             return node("label", label, toParseString=output_inserted)
