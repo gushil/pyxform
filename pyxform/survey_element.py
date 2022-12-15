@@ -71,7 +71,7 @@ class SurveyElement(dict):
         "action": str,
         "list_name": str,
         "trigger": str,
-        "annotated_label": str,
+        "annotated_fields": dict,
     }
 
     def _default(self):
@@ -395,8 +395,12 @@ class SurveyElement(dict):
         )
 
     def get_annotated_label(self):
+        survey = self.get_root()
         annotated_label = self.label
-        for idx, val in enumerate(["type", "name"]):
+        for idx, val in enumerate(survey.annotated_fields):
+            if not hasattr(self, val):
+                continue
+
             annotated_value = "{}: {}".format(val, getattr(self, val))
 
             # Prepend all underscores with a black slash
@@ -420,7 +424,7 @@ class SurveyElement(dict):
         else:
             survey = self.get_root()
             output_label = self.label
-            if survey.annotated_label:
+            if len(survey.annotated_fields) > 0:
                 output_label = self.get_annotated_label()
             label, output_inserted = survey.insert_output_values(output_label, self)
             return node("label", label, toParseString=output_inserted)

@@ -1078,9 +1078,9 @@ class Survey(Section):
             path = self._print_name + ".xml"
 
         if annotate:
-            self.annotated_label = True
+            self.annotated_fields = annotate
         else:
-            self.annotated_label = False
+            self.annotated_fields = []
 
         try:
             with codecs.open(path, mode="w", encoding="utf-8") as file_obj:
