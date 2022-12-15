@@ -401,7 +401,14 @@ class SurveyElement(dict):
             if not hasattr(self, val):
                 continue
 
-            annotated_value = "{}: {}".format(val, getattr(self, val))
+            attr_value = getattr(self, val)
+            if val == "type":
+                if attr_value in ["select one", "select multiple"]:
+                    attr_value = attr_value.replace(" ", "_")
+                    if hasattr(self, "list_name"):
+                        attr_value += " " + getattr(self, "list_name")
+
+            annotated_value = "{}: {}".format(val, attr_value)
 
             # Prepend all underscores with a black slash
             underscore_str = "_"
