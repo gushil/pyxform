@@ -403,8 +403,11 @@ class SurveyElement(dict):
 
             attr_value = getattr(self, val)
             if val == "type":
-                if attr_value in ["select one", "select multiple"]:
-                    attr_value = attr_value.replace(" ", "_")
+                if attr_value in [constants.SELECT_ONE, constants.SELECT_ALL_THAT_APPLY]:
+                    if attr_value == constants.SELECT_ONE:
+                        attr_value = attr_value.replace(" ", "_")
+                    elif attr_value == constants.SELECT_ALL_THAT_APPLY:
+                        attr_value = "select_multiple"
                     if hasattr(self, "list_name"):
                         attr_value += " " + getattr(self, "list_name")
 
