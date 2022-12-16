@@ -23,7 +23,7 @@ class AnnotateLabelTest(PyxformTestCase):
         )
 
     def test_not_annotated_label(self):
-        """Test not annotated label."""
+        """Test not to annotated label if there is no annotate argument."""
         self.assertPyxformXform(
             name="data",
             md="""
@@ -89,5 +89,21 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1                 | 2    | Two   |
             """,
             xml__contains=[r"[Type: select\_multiple choices1] [Name: a]</label>"],
+            annotate=["type", "name"],
+        )
+
+    def test_not_annotate_label__for_choices(self):
+        """Test not to annotated label for choices."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                          |      |       |
+            |          | type                     | name | label |
+            |          | select_one choices1      | a    | A     |
+            | choices  |                          |      |       |
+            |          | list_name                | name | label |
+            |          | choices1                 | 1    | One   |
+            |          | choices1                 | 2    | Two   |
+            """,
+            xml__contains=["<label>One</label>", "<value>1</value>"],
             annotate=["type", "name"],
         )
