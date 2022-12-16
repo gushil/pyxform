@@ -17,9 +17,9 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            #xml__contains=["<label>Name\n", "[type: string] [name: name]</label>"],
+            # xml__contains=["<label>Name\n", "[type: string] [name: name]</label>"],
             xml__contains=["[type: string] [name: name]</label>"],
-            annotate=True,
+            annotate=["type", "name"],
         )
 
     def test_not_annotated_label(self):
@@ -44,7 +44,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | string |   name   | Name  |
             """,
             xml__contains=["<label>Name\n"],
-            annotate=True,
+            annotate=["type"],
         )
 
     def test_annotated_label_with_underscore(self):
@@ -57,5 +57,5 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | string | field_name | Name  |
             """,
             xml__contains=[r"[type: string] [name: field\_name]</label>"],
-            annotate=True,
+            annotate=["type", "name"],
         )
