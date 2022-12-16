@@ -59,3 +59,35 @@ class AnnotateLabelTest(PyxformTestCase):
             xml__contains=[r"[type: string] [name: field\_name]</label>"],
             annotate=["type", "name"],
         )
+
+    def test_annotate_label__for_select_one(self):
+        """Test annotated label for select one item."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                     |      |       |
+            |          | type                | name | label |
+            |          | select_one choices1 | a    | A     |
+            | choices  |                     |      |       |
+            |          | list_name           | name | label |
+            |          | choices1            | 1    | One   |
+            |          | choices1            | 2    | Two   |
+            """,
+            xml__contains=[r"[type: select\_one choices1] [name: a]</label>"],
+            annotate=["type", "name"],
+        )
+
+    def test_annotate_label__for_select_multiple(self):
+        """Test annotated label for select multiple item."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                          |      |       |
+            |          | type                     | name | label |
+            |          | select_multiple choices1 | a    | A     |
+            | choices  |                          |      |       |
+            |          | list_name                | name | label |
+            |          | choices1                 | 1    | One   |
+            |          | choices1                 | 2    | Two   |
+            """,
+            xml__contains=[r"[type: select\_multiple choices1] [name: a]</label>"],
+            annotate=["type", "name"],
+        )
