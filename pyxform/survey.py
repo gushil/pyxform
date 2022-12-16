@@ -1078,6 +1078,10 @@ class Survey(Section):
             path = self._print_name + ".xml"
 
         if annotate:
+            # Name annotation should come first
+            if "name" in annotate and annotate.index("name") != 0:
+                name_old_index = annotate.index("name")
+                annotate.insert(0, annotate.pop(name_old_index))
             self.annotated_fields = annotate
         else:
             self.annotated_fields = []

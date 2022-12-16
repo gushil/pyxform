@@ -18,7 +18,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | string |   name   | Name  |
             """,
             # xml__contains=["<label>Name\n", "[type: string] [name: name]</label>"],
-            xml__contains=["[Type: string] [Name: name]</label>"],
+            xml__contains=["[Name: name] [Type: string]</label>"],
             annotate=["type", "name"],
         )
 
@@ -56,7 +56,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   | name       | label |
             |        | string | field_name | Name  |
             """,
-            xml__contains=[r"[Type: string] [Name: field\_name]</label>"],
+            xml__contains=[r"[Name: field\_name] [Type: string]</label>"],
             annotate=["type", "name"],
         )
 
@@ -72,7 +72,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1            | 1    | One   |
             |          | choices1            | 2    | Two   |
             """,
-            xml__contains=[r"[Type: select\_one choices1] [Name: a]</label>"],
+            xml__contains=[r"[Name: a] [Type: select\_one choices1]</label>"],
             annotate=["type", "name"],
         )
 
@@ -88,7 +88,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1                 | 1    | One   |
             |          | choices1                 | 2    | Two   |
             """,
-            xml__contains=[r"[Type: select\_multiple choices1] [Name: a]</label>"],
+            xml__contains=[r"[Name: a] [Type: select\_multiple choices1]</label>"],
             annotate=["type", "name"],
         )
 
