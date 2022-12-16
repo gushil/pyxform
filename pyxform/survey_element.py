@@ -411,7 +411,7 @@ class SurveyElement(dict):
                     if hasattr(self, "list_name"):
                         attr_value += " " + getattr(self, "list_name")
 
-            annotated_value = "{}: {}".format(val, attr_value)
+            annotated_value = "{}: {}".format(val.capitalize(), attr_value)
 
             # Prepend all underscores with a black slash
             underscore_str = "_"
