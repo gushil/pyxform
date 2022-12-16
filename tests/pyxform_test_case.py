@@ -100,6 +100,14 @@ class PyxformMarkdown:
         survey.title = kwargs.get("title")
         survey.id_string = kwargs.get("id_string")
 
+        # Set annotated_fields from annotate parameter
+        annotated_fields = kwargs.get("annotate", [])
+        # Name annotation should come first
+        if "name" in annotated_fields and annotated_fields.index("name") != 0:
+            name_old_index = annotated_fields.index("name")
+            annotated_fields.insert(0, annotated_fields.pop(name_old_index))
+        survey.annotated_fields = annotated_fields
+
         return survey
 
     @staticmethod

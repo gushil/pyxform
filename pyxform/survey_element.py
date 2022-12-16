@@ -71,6 +71,7 @@ class SurveyElement(dict):
         "action": str,
         "list_name": str,
         "trigger": str,
+        "annotated_fields": dict,
     }
 
     def _default(self):
@@ -393,6 +394,36 @@ class SurveyElement(dict):
             event=triggering_events,
         )
 
+    def get_annotated_label(self):
+        survey = self.get_root()
+        annotated_label = self.label
+        for idx, val in enumerate(survey.annotated_fields):
+            if not hasattr(self, val):
+                continue
+
+            attr_value = getattr(self, val)
+            if val == "type":
+                if attr_value in [constants.SELECT_ONE, constants.SELECT_ALL_THAT_APPLY]:
+                    if attr_value == constants.SELECT_ONE:
+                        attr_value = attr_value.replace(" ", "_")
+                    elif attr_value == constants.SELECT_ALL_THAT_APPLY:
+                        attr_value = "select_multiple"
+                    if hasattr(self, "list_name"):
+                        attr_value += " " + getattr(self, "list_name")
+
+            annotated_value = "{}: {}".format(val.capitalize(), attr_value)
+
+            # Prepend all underscores with a black slash
+            underscore_str = "_"
+            backslash_str = "\\"
+            annotated_value = (backslash_str + underscore_str).join(
+                annotated_value.split(underscore_str)
+            )
+            if idx == 0:
+                annotated_label += "\n"
+            annotated_label += " [{}]".format(annotated_value)
+        return annotated_label
+
     # XML generating functions, these probably need to be moved around.
     def xml_label(self):
         if self.needs_itext_ref():
@@ -402,7 +433,15 @@ class SurveyElement(dict):
             return node("label", ref=ref)
         else:
             survey = self.get_root()
-            label, output_inserted = survey.insert_output_values(self.label, self)
+            output_label = self.label
+            # Annotate fields in annotated_fields
+            # except for choices
+            if len(survey.annotated_fields) > 0 and self.parent.type not in [
+                constants.SELECT_ONE,
+                constants.SELECT_ALL_THAT_APPLY,
+            ]:
+                output_label = self.get_annotated_label()
+            label, output_inserted = survey.insert_output_values(output_label, self)
             return node("label", label, toParseString=output_inserted)
 
     def xml_hint(self):

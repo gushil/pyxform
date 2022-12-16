@@ -172,6 +172,7 @@ class XLS2XFormTests(TestCase):
             odk_validate=False,
             enketo_validate=False,
             pretty_print=False,
+            annotate=False,
         ),
     )
     @mock.patch("pyxform.xls2xform.xls2xform_convert")
@@ -188,6 +189,7 @@ class XLS2XFormTests(TestCase):
             validate=False,
             pretty_print=False,
             enketo=False,
+            annotate=False,
         )
 
     @mock.patch(
@@ -200,6 +202,7 @@ class XLS2XFormTests(TestCase):
             odk_validate=False,
             enketo_validate=False,
             pretty_print=False,
+            annotate=False,
         ),
     )
     @mock.patch("pyxform.xls2xform.xls2xform_convert")
@@ -217,6 +220,7 @@ class XLS2XFormTests(TestCase):
             validate=False,
             pretty_print=False,
             enketo=False,
+            annotate=False,
         )
 
     @mock.patch(
@@ -229,6 +233,7 @@ class XLS2XFormTests(TestCase):
             odk_validate=True,
             enketo_validate=True,
             pretty_print=True,
+            annotate=False,
         ),
     )
     def test_xls2xform_convert_throwing_odk_error(self, parser_mock_args):
