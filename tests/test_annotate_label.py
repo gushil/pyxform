@@ -47,8 +47,8 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["type"],
         )
 
-    def test_annotated_label_with_underscore(self):
-        """Test annotated label with underscore."""
+    def test_annotated_label_with_underscore_name(self):
+        """Test annotated label with underscore name."""
         self.assertPyxformXform(
             name="data",
             md="""
@@ -58,6 +58,19 @@ class AnnotateLabelTest(PyxformTestCase):
             """,
             xml__contains=[r"[Name: field\_name] [Type: string]</label>"],
             annotate=["type", "name"],
+        )
+
+    def test_annotated_label_with_underscore_label(self):
+        """Test annotated label with underscore label."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |            |             |
+            |        | type   | name       | label       |
+            |        | string | field_name | Label_name  |
+            """,
+            xml__contains=[r"<label>Label\_name"],
+            annotate=["all"],
         )
 
     def test_annotate_label__for_select_one(self):
