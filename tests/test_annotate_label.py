@@ -146,3 +146,19 @@ class AnnotateLabelTest(PyxformTestCase):
             xml__contains=["[Name: name] [Type: string]</label>"],
             annotate=["type", "all"],
         )
+
+    def test_annotated_label_with_curly_bracket_char_in_label(self):
+        """Test annotated label with ["{", "}"] char in label."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |
+            |        | type      | name       | label                                 | calculation |
+            |        | string    | field_name | Event_1                               |             |
+            |        | calculate | check1     |                                       | 1+1         |
+            |        | calculate | check2     |                                       | 2+1         |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             |
+            """,
+            xml__contains=[r"<label>This is info: $[check1] / $[check2]"],
+            annotate=["all"],
+        )

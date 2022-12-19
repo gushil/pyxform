@@ -426,6 +426,12 @@ class SurveyElement(dict):
             annotated_label.split(underscore_str)
         )
 
+        # Replace { with [
+        annotated_label = annotated_label.replace("{", "[")
+
+        # Replace } with ]
+        annotated_label = annotated_label.replace("}", "]")
+
         return annotated_label
 
     # XML generating functions, these probably need to be moved around.
