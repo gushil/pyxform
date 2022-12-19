@@ -107,3 +107,29 @@ class AnnotateLabelTest(PyxformTestCase):
             xml__contains=["<label>One</label>", "<value>1</value>"],
             annotate=["type", "name"],
         )
+
+    def test_annotated_label__input_equals_all(self):
+        """Test annotated label with input equals "all"."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |          |       |
+            |        | type   |   name   | label |
+            |        | string |   name   | Name  |
+            """,
+            xml__contains=["[Name: name] [Type: string]</label>"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__input_contains_all(self):
+        """Test annotated label with input contains "all"."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |          |       |
+            |        | type   |   name   | label |
+            |        | string |   name   | Name  |
+            """,
+            xml__contains=["[Name: name] [Type: string]</label>"],
+            annotate=["type", "all"],
+        )
