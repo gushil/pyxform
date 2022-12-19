@@ -413,18 +413,19 @@ class SurveyElement(dict):
 
             annotated_value = "{}: {}".format(val.capitalize(), attr_value)
 
-            # Prepend all underscores with a black slash
-            underscore_str = "_"
-            backslash_str = "\\"
-            annotated_value = (backslash_str + underscore_str).join(
-                annotated_value.split(underscore_str)
-            )
-
             # Annotation(s) should be displayed in newline after item's Label
             if idx == 0:
                 annotated_label += "\n"
 
             annotated_label += " [{}]".format(annotated_value)
+
+        # Prepend all underscores with a black slash
+        underscore_str = "_"
+        backslash_str = "\\"
+        annotated_label = (backslash_str + underscore_str).join(
+            annotated_label.split(underscore_str)
+        )
+
         return annotated_label
 
     # XML generating functions, these probably need to be moved around.
