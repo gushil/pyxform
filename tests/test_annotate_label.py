@@ -47,8 +47,8 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["type"],
         )
 
-    def test_annotated_label_with_underscore(self):
-        """Test annotated label with underscore."""
+    def test_annotated_label_with_underscore_name(self):
+        """Test annotated label with underscore name."""
         self.assertPyxformXform(
             name="data",
             md="""
@@ -58,6 +58,19 @@ class AnnotateLabelTest(PyxformTestCase):
             """,
             xml__contains=[r"[Name: field\_name] [Type: string]</label>"],
             annotate=["type", "name"],
+        )
+
+    def test_annotated_label_with_underscore_label(self):
+        """Test annotated label with underscore label."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |            |             |
+            |        | type   | name       | label       |
+            |        | string | field_name | Label_name  |
+            """,
+            xml__contains=[r"<label>Label\_name"],
+            annotate=["all"],
         )
 
     def test_annotate_label__for_select_one(self):
@@ -106,4 +119,46 @@ class AnnotateLabelTest(PyxformTestCase):
             """,
             xml__contains=["<label>One</label>", "<value>1</value>"],
             annotate=["type", "name"],
+        )
+
+    def test_annotated_label__input_equals_all(self):
+        """Test annotated label with input equals "all"."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |          |       |
+            |        | type   |   name   | label |
+            |        | string |   name   | Name  |
+            """,
+            xml__contains=["[Name: name] [Type: string]</label>"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__input_contains_all(self):
+        """Test annotated label with input contains "all"."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |          |       |
+            |        | type   |   name   | label |
+            |        | string |   name   | Name  |
+            """,
+            xml__contains=["[Name: name] [Type: string]</label>"],
+            annotate=["type", "all"],
+        )
+
+    def test_annotated_label_with_curly_bracket_char_in_label(self):
+        """Test annotated label with ["{", "}"] char in label."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |
+            |        | type      | name       | label                                 | calculation |
+            |        | string    | field_name | Event_1                               |             |
+            |        | calculate | check1     |                                       | 1+1         |
+            |        | calculate | check2     |                                       | 2+1         |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             |
+            """,
+            xml__contains=[r"<label>This is info: $[check1] / $[check2]"],
+            annotate=["all"],
         )

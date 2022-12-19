@@ -1078,6 +1078,9 @@ class Survey(Section):
             path = self._print_name + ".xml"
 
         if annotate:
+            # "all" annotation equals to ["name", "type"]
+            if (len(annotate) == 1 and annotate[0] == "all") or ("all" in annotate):
+                annotate = ["name", "type"]
             # Name annotation should come first
             if "name" in annotate and annotate.index("name") != 0:
                 name_old_index = annotate.index("name")
