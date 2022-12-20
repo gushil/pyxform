@@ -105,7 +105,7 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["type", "name"],
         )
 
-    def test_not_annotate_label__for_choices(self):
+    def test_annotate_label__for_choices(self):
         """Test not to annotated label for choices."""
         self.assertPyxformXform(
             md="""
@@ -117,8 +117,40 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1                 | 1    | One   |
             |          | choices1                 | 2    | Two   |
             """,
-            xml__contains=["<label>One</label>", "<value>1</value>"],
+            xml__contains=["<label>One [1]</label>", "<value>1</value>"],
             annotate=["type", "name"],
+        )
+
+    def test_annotate_label__for_choices__with_underscore_in_label(self):
+        """Test not to annotated label for choices with underscore in label."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                          |      |           |
+            |          | type                     | name | label     |
+            |          | select_one choices1      | a    | A         |
+            | choices  |                          |      |           |
+            |          | list_name                | name | label     |
+            |          | choices1                 | 1    | Label_One |
+            |          | choices1                 | 2    | Two       |
+            """,
+            xml__contains=[r"<label>Label\_One [1]</label>"],
+            annotate=["all"],
+        )
+
+    def test_annotate_label__for_choices__with_curly_bracket_in_label(self):
+        """Test not to annotated label for choices with curly bracket chars in label."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                          |      |             |
+            |          | type                     | name | label       |
+            |          | select_one choices1      | a    | A           |
+            | choices  |                          |      |             |
+            |          | list_name                | name | label       |
+            |          | choices1                 | 1    | Label {One} |
+            |          | choices1                 | 2    | Two         |
+            """,
+            xml__contains=[r"<label>Label [One] [1]</label>"],
+            annotate=["all"],
         )
 
     def test_annotated_label__input_equals_all(self):

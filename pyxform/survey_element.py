@@ -397,40 +397,56 @@ class SurveyElement(dict):
     def get_annotated_label(self):
         survey = self.get_root()
         annotated_label = self.label
-        for idx, val in enumerate(survey.annotated_fields):
-            if not hasattr(self, val):
-                continue
 
-            attr_value = getattr(self, val)
-            if val == "type":
-                if attr_value in [constants.SELECT_ONE, constants.SELECT_ALL_THAT_APPLY]:
-                    if attr_value == constants.SELECT_ONE:
-                        attr_value = attr_value.replace(" ", "_")
-                    elif attr_value == constants.SELECT_ALL_THAT_APPLY:
-                        attr_value = "select_multiple"
-                    if hasattr(self, "list_name"):
-                        attr_value += " " + getattr(self, "list_name")
+        if len(survey.annotated_fields) > 0:
+            # Choices
+            if self.parent.type in [
+                constants.SELECT_ONE,
+                constants.SELECT_ALL_THAT_APPLY,
+            ]:
+                if hasattr(self, "label") and hasattr(self, "name"):
+                    annotated_label = "{} [{}]".format(
+                        getattr(self, "label"), getattr(self, "name")
+                    )
+            else:
+                # Non-Choice fields
+                for idx, val in enumerate(survey.annotated_fields):
+                    if not hasattr(self, val):
+                        continue
 
-            annotated_value = "{}: {}".format(val.capitalize(), attr_value)
+                    attr_value = getattr(self, val)
+                    if val == "type":
+                        if attr_value in [
+                            constants.SELECT_ONE,
+                            constants.SELECT_ALL_THAT_APPLY,
+                        ]:
+                            if attr_value == constants.SELECT_ONE:
+                                attr_value = attr_value.replace(" ", "_")
+                            elif attr_value == constants.SELECT_ALL_THAT_APPLY:
+                                attr_value = "select_multiple"
+                            if hasattr(self, "list_name"):
+                                attr_value += " " + getattr(self, "list_name")
 
-            # Annotation(s) should be displayed in newline after item's Label
-            if idx == 0:
-                annotated_label += "\n"
+                    annotated_value = "{}: {}".format(val.capitalize(), attr_value)
 
-            annotated_label += " [{}]".format(annotated_value)
+                    # Annotation(s) should be displayed in newline after item's Label
+                    if idx == 0:
+                        annotated_label += "\n"
 
-        # Prepend all underscores with a black slash
-        underscore_str = "_"
-        backslash_str = "\\"
-        annotated_label = (backslash_str + underscore_str).join(
-            annotated_label.split(underscore_str)
-        )
+                    annotated_label += " [{}]".format(annotated_value)
 
-        # Replace { with [
-        annotated_label = annotated_label.replace("{", "[")
+            # Prepend all underscores with a black slash
+            underscore_str = "_"
+            backslash_str = "\\"
+            annotated_label = (backslash_str + underscore_str).join(
+                annotated_label.split(underscore_str)
+            )
 
-        # Replace } with ]
-        annotated_label = annotated_label.replace("}", "]")
+            # Replace { with [
+            annotated_label = annotated_label.replace("{", "[")
+
+            # Replace } with ]
+            annotated_label = annotated_label.replace("}", "]")
 
         return annotated_label
 
@@ -444,13 +460,10 @@ class SurveyElement(dict):
         else:
             survey = self.get_root()
             output_label = self.label
-            # Annotate fields in annotated_fields
-            # except for choices
-            if len(survey.annotated_fields) > 0 and self.parent.type not in [
-                constants.SELECT_ONE,
-                constants.SELECT_ALL_THAT_APPLY,
-            ]:
-                output_label = self.get_annotated_label()
+
+            # Annotate fields in survey.annotated_fields
+            output_label = self.get_annotated_label()
+
             label, output_inserted = survey.insert_output_values(output_label, self)
             return node("label", label, toParseString=output_inserted)
 
