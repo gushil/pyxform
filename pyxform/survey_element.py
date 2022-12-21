@@ -397,17 +397,17 @@ class SurveyElement(dict):
     def get_annotated_label(self):
         survey = self.get_root()
         annotated_label = self.label
+        is_choices = self.parent.type in [
+            constants.SELECT_ONE,
+            constants.SELECT_ALL_THAT_APPLY,
+        ]
 
         if len(survey.annotated_fields) > 0:
             # Choices
-            if self.parent.type in [
-                constants.SELECT_ONE,
-                constants.SELECT_ALL_THAT_APPLY,
-            ]:
-                if hasattr(self, "label") and hasattr(self, "name"):
-                    annotated_label = "{} [{}]".format(
-                        getattr(self, "label"), getattr(self, "name")
-                    )
+            if is_choices and hasattr(self, "label") and hasattr(self, "name"):
+                annotated_label = "{} [{}]".format(
+                    getattr(self, "label"), getattr(self, "name")
+                )
             else:
                 # Non-Choice fields
                 for idx, val in enumerate(survey.annotated_fields):
@@ -435,12 +435,14 @@ class SurveyElement(dict):
 
                     annotated_label += " [{}]".format(annotated_value)
 
-            # Prepend all underscores with a black slash
-            underscore_str = "_"
-            backslash_str = "\\"
-            annotated_label = (backslash_str + underscore_str).join(
-                annotated_label.split(underscore_str)
-            )
+            # Prepend all underscores with a blackslash
+            # except for choices
+            if not is_choices:
+                underscore_str = "_"
+                backslash_str = "\\"
+                annotated_label = (backslash_str + underscore_str).join(
+                    annotated_label.split(underscore_str)
+                )
 
             # Replace { with [
             annotated_label = annotated_label.replace("{", "[")
