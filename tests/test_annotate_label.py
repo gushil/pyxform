@@ -106,7 +106,7 @@ class AnnotateLabelTest(PyxformTestCase):
         )
 
     def test_annotate_label__for_choices(self):
-        """Test not to annotated label for choices."""
+        """Test to annotated label for choices."""
         self.assertPyxformXform(
             md="""
             | survey   |                          |      |       |
@@ -122,7 +122,7 @@ class AnnotateLabelTest(PyxformTestCase):
         )
 
     def test_annotate_label__for_choices__with_underscore_in_label(self):
-        """Test not to annotated label for choices with underscore in label."""
+        """Test to annotated label for choices with underscore in label."""
         self.assertPyxformXform(
             md="""
             | survey   |                          |      |           |
@@ -138,7 +138,7 @@ class AnnotateLabelTest(PyxformTestCase):
         )
 
     def test_annotate_label__for_choices__with_curly_bracket_in_label(self):
-        """Test not to annotated label for choices with curly bracket chars in label."""
+        """Test to annotated label for choices with curly bracket chars in label."""
         self.assertPyxformXform(
             md="""
             | survey   |                          |      |             |
