@@ -197,3 +197,57 @@ class AnnotateLabelTest(PyxformTestCase):
             xml__contains=[r"<label>This is info: $[check1] / $[check2]"],
             annotate=["all"],
         )
+
+    def test_annotated_label__body_class(self):
+        """
+        Test annotated label.
+        Form body class always contains text-no-transform.
+        """
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |          |       |
+            |        | type   |   name   | label |
+            |        | string |   name   | Name  |
+            """,
+            xml__contains=['<h:body class="no-text-transform">'],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__body_class_existing_style(self):
+        """
+        Test annotated label with existing style.
+        Form body class always contains text-no-transform.
+        """
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey   |        |          |       |
+            |          | type   |   name   | label |
+            |          | string |   name   | Name  |
+            | settings |        |          |       |
+            |          | style      |      |       |
+            |          | theme-grid |      |       |
+            """,
+            xml__contains=['<h:body class="theme-grid no-text-transform">'],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__body_class_existing_style_no_text_transform(self):
+        """
+        Test annotated label with no-text-transform in existing style.
+        Form body class always contains text-no-transform.
+        """
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey   |        |          |       |
+            |          | type   |   name   | label |
+            |          | string |   name   | Name  |
+            | settings |        |          |       |
+            |          | style                     |     |       |
+            |          | pages no-text-transform   |     |       |
+            """,
+            xml__contains=['<h:body class="pages no-text-transform">'],
+            annotate=["all"],
+        )

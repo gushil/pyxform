@@ -243,9 +243,24 @@ class Survey(Section):
             # try to resolve reference and fail if can't
             self.insert_xpaths(triggering_reference, self)
 
+        is_annotated_form = len(self.annotated_fields) > 0
         body_kwargs = {}
         if hasattr(self, constants.STYLE) and getattr(self, constants.STYLE):
             body_kwargs["class"] = getattr(self, constants.STYLE)
+
+            # Append 'no-text-transform' style into existing style for annotated form
+            if (
+                is_annotated_form
+                and constants.STYLE_NO_TEXT_TRANSFORM not in body_kwargs["class"]
+            ):
+                if len(body_kwargs["class"]) > 0:
+                    body_kwargs["class"] += " "
+                body_kwargs["class"] += constants.STYLE_NO_TEXT_TRANSFORM
+        else:
+            if is_annotated_form:
+                # Assign 'no-text-transform' style into existing style for annotated form
+                body_kwargs["class"] = constants.STYLE_NO_TEXT_TRANSFORM
+
         nsmap = self.get_nsmap()
 
         return node(

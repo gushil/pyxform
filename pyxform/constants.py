@@ -37,6 +37,7 @@ DEFAULT_LANGUAGE_VALUE = "default"
 LABEL = "label"
 HINT = "hint"
 STYLE = "style"
+STYLE_NO_TEXT_TRANSFORM = "no-text-transform"
 ATTRIBUTE = "attribute"
 ALLOW_CHOICE_DUPLICATES = "allow_choice_duplicates"
 
