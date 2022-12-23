@@ -251,3 +251,79 @@ class AnnotateLabelTest(PyxformTestCase):
             xml__contains=['<h:body class="pages no-text-transform">'],
             annotate=["all"],
         )
+
+    def test_annotated_label__group_appearance(self):
+        """
+        Test annotated label.
+        Group appearance class always contains no-collapse.
+        """
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |             |         |         |
+            |        | type        | name    | label   |
+            |        | string      | name    | Name    |
+            |        | begin group | group1  | Group 1 |
+            |        | string      | address | Address |
+            |        | end group   |         |         |
+            """,
+            xml__contains=['<group appearance="no-collapse" ref="/data/group1">'],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__group_existing_appearance(self):
+        """
+        Test annotated label.
+        Group appearance class always contains no-collapse.
+        """
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |             |         |         |            |
+            |        | type        | name    | label   | appearance |
+            |        | string      | name    | Name    |            |
+            |        | begin group | group1  | Group 1 | w5         |
+            |        | string      | address | Address |            |
+            |        | end group   |         |         |            |
+            """,
+            xml__contains=['<group appearance="w5 no-collapse" ref="/data/group1">'],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__group_existing_appearance_no_collapse(self):
+        """
+        Test annotated label.
+        Group appearance class always contains no-collapse.
+        """
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |             |         |         |                |
+            |        | type        | name    | label   | appearance     |
+            |        | string      | name    | Name    |                |
+            |        | begin group | group1  | Group 1 | w4 no-collapse |
+            |        | string      | address | Address |                |
+            |        | end group   |         |         |                |
+            """,
+            xml__contains=['<group appearance="w4 no-collapse" ref="/data/group1">'],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__repeat_appearance(self):
+        """
+        Test annotated label.
+        Repeat appearance class doesn't contains no-collapse.
+        """
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |              |         |          |
+            |        | type         | name    | label    |
+            |        | string       | name    | Name     |
+            |        | begin repeat | repeat1 | repeat 1 |
+            |        | string       | address | Address  |
+            |        | end repeat   |         |          |
+            """,
+            xml__contains=['<repeat nodeset="/data/repeat1">'],
+            annotate=["all"],
+        )

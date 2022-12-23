@@ -47,6 +47,7 @@ BIND = (
 MEDIA = "media"
 CONTROL = "control"
 APPEARANCE = "appearance"
+APPEARANCE_NO_COLLAPSE = "no-collapse"
 
 LOOP = "loop"
 COLUMNS = "columns"

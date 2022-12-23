@@ -2,6 +2,7 @@
 """
 Section survey element module.
 """
+from pyxform import constants
 from pyxform.errors import PyXFormError
 from pyxform.external_instance import ExternalInstance
 from pyxform.question import SurveyElement
@@ -71,6 +72,26 @@ class Section(SurveyElement):
                 result.appendChild(child.xml_instance())
         return result
 
+    def generate_annotate_appearance(self):
+        survey = self.get_root()
+        control_dict = self.control.copy()
+        annotate_appearance = ""
+        if len(survey.annotated_fields) > 0:
+            if constants.APPEARANCE in control_dict:
+                annotate_appearance = control_dict[constants.APPEARANCE]
+                # Append 'no-collapse' style into existing appearance for annotated form
+                if (
+                    constants.APPEARANCE_NO_COLLAPSE
+                    not in control_dict[constants.APPEARANCE]
+                ):
+                    if len(control_dict[constants.APPEARANCE]) > 0:
+                        annotate_appearance += " "
+                    annotate_appearance += constants.APPEARANCE_NO_COLLAPSE
+            else:
+                # Assign 'no-collapse' style into existing appearance for annotated form
+                annotate_appearance = constants.APPEARANCE_NO_COLLAPSE
+        return annotate_appearance
+
     def xml_instance_array(self):
         """
         This method is used for generating flat instances.
@@ -113,6 +134,7 @@ class RepeatingSection(Section):
         # Resolve field references in attributes
         for key, value in control_dict.items():
             control_dict[key] = survey.insert_xpaths(value, self)
+
         repeat_node = node("repeat", nodeset=self.get_xpath(), **control_dict)
 
         for n in Section.xml_control(self):
@@ -185,8 +207,12 @@ class GroupedSection(Section):
         for n in Section.xml_control(self):
             children.append(n)
 
-        if "appearance" in control_dict:
-            attributes["appearance"] = control_dict["appearance"]
+        annotate_appearance = self.generate_annotate_appearance()
+        if len(annotate_appearance) > 0:
+            control_dict[constants.APPEARANCE] = annotate_appearance
+
+        if constants.APPEARANCE in control_dict:
+            attributes[constants.APPEARANCE] = control_dict[constants.APPEARANCE]
 
         if "intent" in control_dict:
             survey = self.get_root()
