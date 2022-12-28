@@ -37,6 +37,7 @@ NSMAP = {
     "xmlns:ev": "http://www.w3.org/2001/xml-events",
     "xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
     "xmlns:jr": "http://openrosa.org/javarosa",
+    "xmlns:oc": "http://openclinica.org/xforms",
     "xmlns:orx": "http://openrosa.org/xforms",
     "xmlns:odk": "http://www.opendatakit.org/xforms",
 }

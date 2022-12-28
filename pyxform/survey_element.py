@@ -411,10 +411,13 @@ class SurveyElement(dict):
             else:
                 # Non-Choice fields
                 for idx, val in enumerate(survey.annotated_fields):
-                    if not hasattr(self, val):
+                    if not hasattr(self, val) and val != "itemgroup":
                         continue
 
-                    attr_value = getattr(self, val)
+                    attr_label = val.capitalize()
+                    attr_value = ""
+                    if hasattr(self, val):
+                        attr_value = getattr(self, val)
                     if val == "type":
                         if attr_value in [
                             constants.SELECT_ONE,
@@ -427,13 +430,19 @@ class SurveyElement(dict):
                             if hasattr(self, "list_name"):
                                 attr_value += " " + getattr(self, "list_name")
 
-                    annotated_value = "{}: {}".format(val.capitalize(), attr_value)
+                    elif val == "itemgroup":
+                        attr_value = self.get("bind", {}).get("oc:itemgroup", "")
+                        if attr_value != "":
+                            attr_label = constants.ANNOTATE_ITEMGROUP
 
-                    # Annotation(s) should be displayed in newline after item's Label
-                    if idx == 0:
-                        annotated_label += "\n"
+                    if attr_label != "" and attr_value != "":
+                        annotated_value = "{}: {}".format(attr_label, attr_value)
 
-                    annotated_label += " [{}]".format(annotated_value)
+                        # Annotation(s) should be displayed in newline after item's Label
+                        if idx == 0:
+                            annotated_label += "\n"
+
+                        annotated_label += " [{}]".format(annotated_value)
 
             # Prepend all underscores with a blackslash
             # except for choices

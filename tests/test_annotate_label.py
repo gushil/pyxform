@@ -327,3 +327,16 @@ class AnnotateLabelTest(PyxformTestCase):
             xml__contains=['<repeat nodeset="/data/repeat1">'],
             annotate=["all"],
         )
+
+    def test_annotated_label__itemgroup(self):
+        """Test annotated label for item with itemgroup."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |          |       |                    |
+            |        | type   |   name   | label | bind::oc:itemgroup |
+            |        | string |   name   | Name  | ItemGroup1         |
+            """,
+            xml__contains=["[Item Group: ItemGroup1]"],
+            annotate=["all"],
+        )

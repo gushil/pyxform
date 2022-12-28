@@ -110,7 +110,7 @@ def _create_parser():
     parser.add_argument(
         "--annotate",
         action="append",
-        choices=["name", "type", "all"],
+        choices=["name", "type", "itemgroup", "all"],
         help="Print XML forms with annotated label(s). This argument can be used multiple times.",
     )
     return parser
