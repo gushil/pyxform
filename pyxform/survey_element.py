@@ -418,6 +418,8 @@ class SurveyElement(dict):
                     attr_value = ""
                     if hasattr(self, val):
                         attr_value = getattr(self, val)
+
+                    # Annotated field handling
                     if val == "type":
                         if attr_value in [
                             constants.SELECT_ONE,
@@ -429,12 +431,12 @@ class SurveyElement(dict):
                                 attr_value = "select_multiple"
                             if hasattr(self, "list_name"):
                                 attr_value += " " + getattr(self, "list_name")
-
                     elif val == "itemgroup":
                         attr_value = self.get("bind", {}).get("oc:itemgroup", "")
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_ITEMGROUP
 
+                    # Annotated value assignment
                     if attr_label != "" and attr_value != "":
                         annotated_value = "{}: {}".format(attr_label, attr_value)
 
@@ -444,8 +446,8 @@ class SurveyElement(dict):
 
                         annotated_label += " [{}]".format(annotated_value)
 
-            # Prepend all underscores with a blackslash
-            # except for choices
+            # Annotated field post-processing
+            # Prepend all underscores with a blackslash except for choices
             if not is_choices:
                 underscore_str = "_"
                 backslash_str = "\\"
