@@ -17,8 +17,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            # xml__contains=["<label>Name\n", "[type: string] [name: name]</label>"],
-            xml__contains=["[Name: name] [Type: string]</label>"],
+            xml__contains=["[Name: name] ", "[Type: string] "],
             annotate=["type", "name"],
         )
 
@@ -31,11 +30,11 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__contains=["<label>Name</label>"],
+            xml__not_contains=["[Name: name] ", "[Type: string] "],
         )
 
     def test_annotated_label_contains_newline(self):
-        """Test annotated label contains newline after user defined label."""
+        """Test annotated label contains newline."""
         self.assertPyxformXform(
             name="data",
             md="""
@@ -43,12 +42,12 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__contains=["<label>Name\n"],
+            xml__contains=["<h:br/>"],
             annotate=["type"],
         )
 
-    def test_annotated_label_with_underscore_name(self):
-        """Test annotated label with underscore name."""
+    def test_annotated_label_with_underscore_field_name(self):
+        """Test annotated label with underscore field name."""
         self.assertPyxformXform(
             name="data",
             md="""
@@ -56,12 +55,12 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   | name       | label |
             |        | string | field_name | Name  |
             """,
-            xml__contains=[r"[Name: field\_name] [Type: string]</label>"],
+            xml__contains=[r"[Name: field\_name]"],
             annotate=["type", "name"],
         )
 
-    def test_annotated_label_with_underscore_label(self):
-        """Test annotated label with underscore label."""
+    def test_annotated_label_with_underscore_label_name(self):
+        """Test annotated label with underscore label name."""
         self.assertPyxformXform(
             name="data",
             md="""
@@ -69,7 +68,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   | name       | label       |
             |        | string | field_name | Label_name  |
             """,
-            xml__contains=[r"<label>Label\_name"],
+            xml__contains=[r"Label\_name"],
             annotate=["all"],
         )
 
@@ -85,7 +84,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1            | 1    | One   |
             |          | choices1            | 2    | Two   |
             """,
-            xml__contains=[r"[Name: a] [Type: select\_one choices1]</label>"],
+            xml__contains=[r"[Type: select\_one choices1]"],
             annotate=["type", "name"],
         )
 
@@ -101,7 +100,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1                 | 1    | One   |
             |          | choices1                 | 2    | Two   |
             """,
-            xml__contains=[r"[Name: a] [Type: select\_multiple choices1]</label>"],
+            xml__contains=[r"[Type: select\_multiple choices1]"],
             annotate=["type", "name"],
         )
 
@@ -117,7 +116,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1                 | 1    | One   |
             |          | choices1                 | 2    | Two   |
             """,
-            xml__contains=["<label>One [1]</label>", "<value>1</value>"],
+            xml__contains=["One [1]", "<value>1</value>"],
             annotate=["type", "name"],
         )
 
@@ -136,7 +135,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1                 | 1    | Label_One |
             |          | choices1                 | 2_   | Two       |
             """,
-            xml__contains=[r"<label>Label_One [1]</label>", r"<label>Two [2_]</label>"],
+            xml__contains=[r"Label_One [1]", r"Two [2_]"],
             annotate=["all"],
         )
 
@@ -152,7 +151,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1                 | 1    | Label {One} |
             |          | choices1                 | 2    | Two         |
             """,
-            xml__contains=[r"<label>Label [One] [1]</label>"],
+            xml__contains=[r"Label [One]"],
             annotate=["all"],
         )
 
@@ -165,7 +164,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__contains=["[Name: name] [Type: string]</label>"],
+            xml__contains=["[Name: name]", "[Type: string]"],
             annotate=["all"],
         )
 
@@ -178,7 +177,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__contains=["[Name: name] [Type: string]</label>"],
+            xml__contains=["[Name: name]", "[Type: string]"],
             annotate=["type", "all"],
         )
 
@@ -194,7 +193,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | calculate | check2     |                                       | 2+1         |
             |        | note      | info       | This is info:  ${check1} / ${check2}  |             |
             """,
-            xml__contains=[r"<label>This is info: $[check1] / $[check2]"],
+            xml__contains=[r"This is info: $[check1] / $[check2]"],
             annotate=["all"],
         )
 
@@ -338,5 +337,20 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | string |   name   | Name  | ItemGroup1         |
             """,
             xml__contains=["[Item Group: ItemGroup1]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__itemgroup_style(self):
+        """Test annotated label style for item with itemgroup."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |          |       |                    |
+            |        | type   |   name   | label | bind::oc:itemgroup |
+            |        | string |   name   | Name  | ItemGroup1         |
+            """,
+            xml__contains=[
+                '<h:span style="color: blue">[Item Group: ItemGroup1] </h:span>'
+            ],
             annotate=["all"],
         )
