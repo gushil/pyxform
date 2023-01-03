@@ -1081,7 +1081,7 @@ class Survey(Section):
         pretty_print=True,
         warnings=None,
         enketo=False,
-        annotate=False,
+        annotate_fields=[],
     ):
         """
         Print the xForm to a file and optionally validate it as well by
@@ -1092,17 +1092,7 @@ class Survey(Section):
         if not path:
             path = self._print_name + ".xml"
 
-        if annotate:
-            # "all" annotation equals to ["name", "type"]
-            if (len(annotate) == 1 and annotate[0] == "all") or ("all" in annotate):
-                annotate = ["name", "type"]
-            # Name annotation should come first
-            if "name" in annotate and annotate.index("name") != 0:
-                name_old_index = annotate.index("name")
-                annotate.insert(0, annotate.pop(name_old_index))
-            self.annotated_fields = annotate
-        else:
-            self.annotated_fields = []
+        self.annotated_fields = annotate_fields
 
         try:
             with codecs.open(path, mode="w", encoding="utf-8") as file_obj:
@@ -1138,7 +1128,7 @@ class Survey(Section):
         pretty_print=True,
         warnings=None,
         enketo=False,
-        annotate=False,
+        annotate_fields=[],
     ):
         """
         Generates the XForm XML.
@@ -1161,7 +1151,7 @@ class Survey(Section):
                 pretty_print=pretty_print,
                 warnings=warnings,
                 enketo=enketo,
-                annotate=annotate,
+                annotate_fields=annotate_fields,
             )
         finally:
             if os.path.exists(tmp.name):

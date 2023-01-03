@@ -394,27 +394,64 @@ class SurveyElement(dict):
             event=triggering_events,
         )
 
+    def annotated_value_processing(self, value, is_choices):
+        attr_value = value
+        if not is_choices:
+            underscore_str = "_"
+            backslash_str = "\\"
+            attr_value = (backslash_str + underscore_str).join(
+                attr_value.split(underscore_str)
+            )
+
+        # Replace { with [
+        attr_value = attr_value.replace("{", "[")
+
+        # Replace } with ]
+        attr_value = attr_value.replace("}", "]")
+
+        return attr_value
+
     def get_annotated_label(self):
         survey = self.get_root()
-        annotated_label = self.label
-        is_choices = self.parent.type in [
-            constants.SELECT_ONE,
-            constants.SELECT_ALL_THAT_APPLY,
-        ]
+        is_annotated = len(self.get_root().annotated_fields) > 0
 
-        if len(survey.annotated_fields) > 0:
+        if not is_annotated:
+            return self.label
+        else:
+            is_choices = self.parent.type in [
+                constants.SELECT_ONE,
+                constants.SELECT_ALL_THAT_APPLY,
+            ]
+            html_span = "h:span"
+            html_br = "h:br"
+            annotated_value_styles = {"itemgroup": "color: blue"}
+            annotated_label_node = node(html_span)
+            annotated_label = self.label
             # Choices
             if is_choices and hasattr(self, "label") and hasattr(self, "name"):
                 annotated_label = "{} [{}]".format(
                     getattr(self, "label"), getattr(self, "name")
                 )
+                annotated_label = self.annotated_value_processing(
+                    annotated_label, is_choices
+                )
+                annotated_label_node.appendChild(node(html_span, annotated_label))
             else:
+                annotated_label = self.annotated_value_processing(
+                    annotated_label, is_choices
+                )
                 # Non-Choice fields
                 for idx, val in enumerate(survey.annotated_fields):
-                    if not hasattr(self, val):
+                    if not hasattr(self, val) and val != "itemgroup":
                         continue
 
-                    attr_value = getattr(self, val)
+                    attr_label = val.capitalize()
+                    attr_value = ""
+                    attr_style = ""
+                    if hasattr(self, val):
+                        attr_value = getattr(self, val)
+
+                    # Annotated field handling
                     if val == "type":
                         if attr_value in [
                             constants.SELECT_ONE,
@@ -426,31 +463,39 @@ class SurveyElement(dict):
                                 attr_value = "select_multiple"
                             if hasattr(self, "list_name"):
                                 attr_value += " " + getattr(self, "list_name")
+                    elif val == "itemgroup":
+                        attr_value = self.get("bind", {}).get("oc:itemgroup", "")
+                        if attr_value != "":
+                            attr_label = constants.ANNOTATE_ITEMGROUP
 
-                    annotated_value = "{}: {}".format(val.capitalize(), attr_value)
+                    # Annotated value style
+                    if val in annotated_value_styles.keys():
+                        attr_style = annotated_value_styles[val]
 
-                    # Annotation(s) should be displayed in newline after item's Label
-                    if idx == 0:
-                        annotated_label += "\n"
+                    # Annotated value assignment
+                    if attr_label != "" and attr_value != "":
+                        attr_value = self.annotated_value_processing(
+                            attr_value, is_choices
+                        )
+                        annotated_value = "{}: {}".format(attr_label, attr_value)
+                        attributes = {}
+                        if attr_style != "":
+                            attributes["style"] = attr_style
 
-                    annotated_label += " [{}]".format(annotated_value)
+                        annotated_label_value = "[{}] ".format(annotated_value)
 
-            # Prepend all underscores with a blackslash
-            # except for choices
-            if not is_choices:
-                underscore_str = "_"
-                backslash_str = "\\"
-                annotated_label = (backslash_str + underscore_str).join(
-                    annotated_label.split(underscore_str)
-                )
+                        # Annotation(s) should be displayed in newline after item's Label
+                        if idx == 0:
+                            annotated_label_node.appendChild(
+                                node(html_span, annotated_label)
+                            )
+                            annotated_label_node.appendChild(node(html_br))
 
-            # Replace { with [
-            annotated_label = annotated_label.replace("{", "[")
+                        annotated_label_node.appendChild(
+                            node(html_span, annotated_label_value, **attributes)
+                        )
 
-            # Replace } with ]
-            annotated_label = annotated_label.replace("}", "]")
-
-        return annotated_label
+            return annotated_label_node
 
     # XML generating functions, these probably need to be moved around.
     def xml_label(self):
@@ -464,10 +509,13 @@ class SurveyElement(dict):
             output_label = self.label
 
             # Annotate fields in survey.annotated_fields
-            output_label = self.get_annotated_label()
+            annotated_label = self.get_annotated_label()
 
-            label, output_inserted = survey.insert_output_values(output_label, self)
-            return node("label", label, toParseString=output_inserted)
+            if annotated_label == output_label:
+                label, output_inserted = survey.insert_output_values(output_label, self)
+                return node("label", label, toParseString=output_inserted)
+            else:
+                return node("label", annotated_label)
 
     def xml_hint(self):
         if isinstance(self.hint, dict) or self.guidance_hint:

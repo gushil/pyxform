@@ -34,7 +34,7 @@ def xls2xform_convert(
     validate=True,
     pretty_print=True,
     enketo=False,
-    annotate=False,
+    annotate_fields=[],
 ):
     warnings = []
 
@@ -50,7 +50,7 @@ def xls2xform_convert(
         pretty_print=pretty_print,
         warnings=warnings,
         enketo=enketo,
-        annotate=annotate,
+        annotate_fields=annotate_fields,
     )
     output_dir = os.path.split(xform_path)[0]
     if has_external_choices(json_survey):
@@ -110,7 +110,7 @@ def _create_parser():
     parser.add_argument(
         "--annotate",
         action="append",
-        choices=["name", "type", "all"],
+        choices=["name", "type", "itemgroup", "all"],
         help="Print XML forms with annotated label(s). This argument can be used multiple times.",
     )
     return parser
@@ -150,6 +150,29 @@ def main_cli():
     if args.output_path is None:
         args.output_path = get_xml_path(args.path_to_XLSForm)
 
+    # annotate fields setup and maintains its order
+    annotate_fields = []
+    if args.annotate is not None and type(args.annotate) is list:
+        annotate_fields = args.annotate
+
+        # setup default annotate fields order
+        default_annotate_fields_order = []
+        for action in parser._actions:
+            if action.dest == "annotate" and hasattr(action, "choices"):
+                default_annotate_fields_order = getattr(action, "choices")[:-1]
+
+        if (len(annotate_fields) == 1 and annotate_fields[0] == "all") or (
+            "all" in annotate_fields
+        ):
+            annotate_fields = default_annotate_fields_order
+        else:
+            if len(annotate_fields) > 1:
+                annotate_fields = [
+                    field
+                    for field in default_annotate_fields_order
+                    if field in annotate_fields
+                ]
+
     if args.json:
         # Store everything in a list just in case the user wants to output
         # as a JSON encoded string.
@@ -162,7 +185,7 @@ def main_cli():
                 validate=args.odk_validate,
                 pretty_print=args.pretty_print,
                 enketo=args.enketo_validate,
-                annotate=args.annotate,
+                annotate_fields=annotate_fields,
             )
 
             response["code"] = 100
@@ -186,7 +209,7 @@ def main_cli():
                 validate=args.odk_validate,
                 pretty_print=args.pretty_print,
                 enketo=args.enketo_validate,
-                annotate=args.annotate,
+                annotate_fields=annotate_fields,
             )
         except EnvironmentError as e:
             # Do not crash if 'java' not installed

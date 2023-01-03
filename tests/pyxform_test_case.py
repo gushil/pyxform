@@ -100,15 +100,19 @@ class PyxformMarkdown:
         survey.title = kwargs.get("title")
         survey.id_string = kwargs.get("id_string")
 
+        default_annotate_fields_order = ["name", "type", "itemgroup"]
         # Set annotated_fields from annotate parameter
         annotate = kwargs.get("annotate", [])
+
         # "all" annotation equals to ["name", "type"]
         if (len(annotate) == 1 and annotate[0] == "all") or ("all" in annotate):
-            annotate = ["name", "type"]
-        # Name annotation should come first
-        if "name" in annotate and annotate.index("name") != 0:
-            name_old_index = annotate.index("name")
-            annotate.insert(0, annotate.pop(name_old_index))
+            annotate = default_annotate_fields_order
+        else:
+            # keep order of annotate
+            if len(annotate) > 1:
+                annotate = [
+                    field for field in default_annotate_fields_order if field in annotate
+                ]
         survey.annotated_fields = annotate
 
         return survey
