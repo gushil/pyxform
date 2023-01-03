@@ -354,3 +354,37 @@ class AnnotateLabelTest(PyxformTestCase):
             ],
             annotate=["all"],
         )
+
+    def test_annotated_label__relevant(self):
+        """Test annotated label for item with relevant check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |               |
+            |        | type      | name       | label                                 | calculation | relevant      |
+            |        | string    | field_name | Event_1                               |             |               |
+            |        | calculate | check1     |                                       | 1+1         |               |
+            |        | calculate | check2     |                                       | 2+1         |               |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 | 
+            """,
+            xml__contains=["[Show When: $[check2] gt 1]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__relevant_style(self):
+        """Test annotated label style for item with relevant check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |               |
+            |        | type      | name       | label                                 | calculation | relevant      |
+            |        | string    | field_name | Event_1                               |             |               |
+            |        | calculate | check1     |                                       | 1+1         |               |
+            |        | calculate | check2     |                                       | 2+1         |               |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 | 
+            """,
+            xml__contains=[
+                '<h:span style="color: green">[Show When: $[check2] gt 1] </h:span>'
+            ],
+            annotate=["all"],
+        )
