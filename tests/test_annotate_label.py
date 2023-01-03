@@ -388,3 +388,37 @@ class AnnotateLabelTest(PyxformTestCase):
             ],
             annotate=["all"],
         )
+
+    def test_annotated_label__required(self):
+        """Test annotated label for item with required check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |               |
+            |        | type      | name       | label                                 | calculation | required      |
+            |        | string    | field_name | Event_1                               |             |               |
+            |        | calculate | check1     |                                       | 1+1         |               |
+            |        | calculate | check2     |                                       | 2+1         |               |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 | 
+            """,
+            xml__contains=["[Required: $[check2] gt 1]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__required_style(self):
+        """Test annotated label style for item with required check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |               |
+            |        | type      | name       | label                                 | calculation | required      |
+            |        | string    | field_name | Event_1                               |             |               |
+            |        | calculate | check1     |                                       | 1+1         |               |
+            |        | calculate | check2     |                                       | 2+1         |               |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 | 
+            """,
+            xml__contains=[
+                '<h:span style="color: red">[Required: $[check2] gt 1] </h:span>'
+            ],
+            annotate=["all"],
+        )

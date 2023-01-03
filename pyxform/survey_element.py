@@ -403,7 +403,7 @@ class SurveyElement(dict):
                 attr_value.split(underscore_str)
             )
 
-            if field_name == "relevant":
+            if field_name in ["relevant", "required"]:
                 # Replace > with gt
                 attr_value = attr_value.replace(">", "gt")
 
@@ -434,6 +434,7 @@ class SurveyElement(dict):
             annotated_value_styles = {
                 "itemgroup": "color: blue",
                 "relevant": "color: green",
+                "required": "color: red",
             }
             annotated_label_node = node(html_span)
             annotated_label = self.label
@@ -452,7 +453,11 @@ class SurveyElement(dict):
                 )
                 # Non-Choice fields
                 for idx, val in enumerate(survey.annotated_fields):
-                    if not hasattr(self, val) and val not in ["itemgroup", "relevant"]:
+                    if not hasattr(self, val) and val not in [
+                        "itemgroup",
+                        "relevant",
+                        "required",
+                    ]:
                         continue
 
                     attr_label = val.capitalize()
@@ -481,6 +486,8 @@ class SurveyElement(dict):
                         attr_value = self.get("bind", {}).get("relevant", "")
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_RELEVANT
+                    elif val == "required":
+                        attr_value = self.get("bind", {}).get("required", "")
 
                     # Annotated value style
                     if val in annotated_value_styles.keys():
