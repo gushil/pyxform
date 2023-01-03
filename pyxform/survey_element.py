@@ -394,14 +394,21 @@ class SurveyElement(dict):
             event=triggering_events,
         )
 
-    def annotated_value_processing(self, value, is_choices):
+    def annotated_value_processing(self, value, field_name):
         attr_value = value
-        if not is_choices:
+        if field_name != "choices":
             underscore_str = "_"
             backslash_str = "\\"
             attr_value = (backslash_str + underscore_str).join(
                 attr_value.split(underscore_str)
             )
+
+            if field_name == "relevant":
+                # Replace > with gt
+                attr_value = attr_value.replace(">", "gt")
+
+                # Replace < with lt
+                attr_value = attr_value.replace(">", "gt")
 
         # Replace { with [
         attr_value = attr_value.replace("{", "[")
@@ -424,7 +431,10 @@ class SurveyElement(dict):
             ]
             html_span = "h:span"
             html_br = "h:br"
-            annotated_value_styles = {"itemgroup": "color: blue"}
+            annotated_value_styles = {
+                "itemgroup": "color: blue",
+                "relevant": "color: green",
+            }
             annotated_label_node = node(html_span)
             annotated_label = self.label
             # Choices
@@ -433,16 +443,16 @@ class SurveyElement(dict):
                     getattr(self, "label"), getattr(self, "name")
                 )
                 annotated_label = self.annotated_value_processing(
-                    annotated_label, is_choices
+                    annotated_label, "choices"
                 )
                 annotated_label_node.appendChild(node(html_span, annotated_label))
             else:
                 annotated_label = self.annotated_value_processing(
-                    annotated_label, is_choices
+                    annotated_label, "not choices"
                 )
                 # Non-Choice fields
                 for idx, val in enumerate(survey.annotated_fields):
-                    if not hasattr(self, val) and val != "itemgroup":
+                    if not hasattr(self, val) and val not in ["itemgroup", "relevant"]:
                         continue
 
                     attr_label = val.capitalize()
@@ -467,6 +477,10 @@ class SurveyElement(dict):
                         attr_value = self.get("bind", {}).get("oc:itemgroup", "")
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_ITEMGROUP
+                    elif val == "relevant":
+                        attr_value = self.get("bind", {}).get("relevant", "")
+                        if attr_value != "":
+                            attr_label = constants.ANNOTATE_RELEVANT
 
                     # Annotated value style
                     if val in annotated_value_styles.keys():
@@ -474,9 +488,7 @@ class SurveyElement(dict):
 
                     # Annotated value assignment
                     if attr_label != "" and attr_value != "":
-                        attr_value = self.annotated_value_processing(
-                            attr_value, is_choices
-                        )
+                        attr_value = self.annotated_value_processing(attr_value, val)
                         annotated_value = "{}: {}".format(attr_label, attr_value)
                         attributes = {}
                         if attr_style != "":

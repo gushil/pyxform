@@ -100,7 +100,7 @@ class PyxformMarkdown:
         survey.title = kwargs.get("title")
         survey.id_string = kwargs.get("id_string")
 
-        default_annotate_fields_order = ["name", "type", "itemgroup"]
+        default_annotate_fields_order = ["name", "type", "itemgroup", "relevant"]
         # Set annotated_fields from annotate parameter
         annotate = kwargs.get("annotate", [])
 
