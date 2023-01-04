@@ -403,7 +403,7 @@ class SurveyElement(dict):
                 attr_value.split(underscore_str)
             )
 
-            if field_name in ["relevant", "required"]:
+            if field_name in ["relevant", "required", "constraint"]:
                 # Replace > with gt
                 attr_value = attr_value.replace(">", "gt")
 
@@ -435,6 +435,7 @@ class SurveyElement(dict):
                 "itemgroup": "color: blue",
                 "relevant": "color: green",
                 "required": "color: red",
+                "constraint": "color: magenta",
             }
             annotated_label_node = node(html_span)
             annotated_label = self.label
@@ -457,6 +458,7 @@ class SurveyElement(dict):
                         "itemgroup",
                         "relevant",
                         "required",
+                        "constraint",
                     ]:
                         continue
 
@@ -488,6 +490,8 @@ class SurveyElement(dict):
                             attr_label = constants.ANNOTATE_RELEVANT
                     elif val == "required":
                         attr_value = self.get("bind", {}).get("required", "")
+                    elif val == "constraint":
+                        attr_value = self.get("bind", {}).get("constraint", "")
 
                     # Annotated value style
                     if val in annotated_value_styles.keys():

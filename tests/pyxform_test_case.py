@@ -106,6 +106,7 @@ class PyxformMarkdown:
             "itemgroup",
             "relevant",
             "required",
+            "constraint",
         ]
         # Set annotated_fields from annotate parameter
         annotate = kwargs.get("annotate", [])

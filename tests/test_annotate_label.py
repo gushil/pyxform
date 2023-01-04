@@ -422,3 +422,37 @@ class AnnotateLabelTest(PyxformTestCase):
             ],
             annotate=["all"],
         )
+
+    def test_annotated_label__constraint(self):
+        """Test annotated label for item with constraint check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |               |
+            |        | type      | name       | label                                 | calculation | constraint      |
+            |        | string    | field_name | Event_1                               |             |               |
+            |        | calculate | check1     |                                       | 1+1         |               |
+            |        | calculate | check2     |                                       | 2+1         |               |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 | 
+            """,
+            xml__contains=["[Constraint: $[check2] gt 1]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__constraint_style(self):
+        """Test annotated label style for item with constraint check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |               |
+            |        | type      | name       | label                                 | calculation | constraint      |
+            |        | string    | field_name | Event_1                               |             |               |
+            |        | calculate | check1     |                                       | 1+1         |               |
+            |        | calculate | check2     |                                       | 2+1         |               |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 | 
+            """,
+            xml__contains=[
+                '<h:span style="color: magenta">[Constraint: $[check2] gt 1] </h:span>'
+            ],
+            annotate=["all"],
+        )
