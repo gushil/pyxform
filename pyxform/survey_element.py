@@ -505,20 +505,20 @@ class SurveyElement(dict):
                         if attr_style != "":
                             attributes["style"] = attr_style
 
-                        annotated_label_value = "[{}] ".format(annotated_value)
+                        annotated_label_value = " [{}]".format(annotated_value)
 
                         # Annotation(s) should be displayed in newline after item's Label
                         if idx == 0:
-                            annotated_label_node.appendChild(
-                                node(html_span, annotated_label)
+                            annotated_label += "\n"
+
+                        if attr_style == "":
+                            annotated_label += annotated_label_value
+                        else:
+                            annotated_label += '<span style="{}">{}</span>'.format(
+                                attr_style, annotated_label_value
                             )
-                            annotated_label_node.appendChild(node(html_br))
 
-                        annotated_label_node.appendChild(
-                            node(html_span, annotated_label_value, **attributes)
-                        )
-
-            return annotated_label_node
+            return annotated_label
 
     # XML generating functions, these probably need to be moved around.
     def xml_label(self):
@@ -533,12 +533,11 @@ class SurveyElement(dict):
 
             # Annotate fields in survey.annotated_fields
             annotated_label = self.get_annotated_label()
+            if annotated_label != output_label:
+                output_label = annotated_label
 
-            if annotated_label == output_label:
-                label, output_inserted = survey.insert_output_values(output_label, self)
-                return node("label", label, toParseString=output_inserted)
-            else:
-                return node("label", annotated_label)
+            label, output_inserted = survey.insert_output_values(output_label, self)
+            return node("label", label, toParseString=output_inserted)
 
     def xml_hint(self):
         if isinstance(self.hint, dict) or self.guidance_hint:

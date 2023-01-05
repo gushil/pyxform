@@ -17,7 +17,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__contains=["[Name: name] ", "[Type: string] "],
+            xml__contains=["[Name: name] [Type: string]"],
             annotate=["type", "name"],
         )
 
@@ -30,7 +30,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__not_contains=["[Name: name] ", "[Type: string] "],
+            xml__not_contains=["[Name: name] [Type: string]"],
         )
 
     def test_annotated_label_contains_newline(self):
@@ -42,7 +42,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__contains=["<h:br/>"],
+            xml__contains=["<label>Name\n"],
             annotate=["type"],
         )
 
@@ -55,7 +55,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   | name       | label |
             |        | string | field_name | Name  |
             """,
-            xml__contains=[r"[Name: field\_name]"],
+            xml__contains=[r"[Name: field\_name] [Type: string]</label>"],
             annotate=["type", "name"],
         )
 
@@ -68,7 +68,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   | name       | label       |
             |        | string | field_name | Label_name  |
             """,
-            xml__contains=[r"Label\_name"],
+            xml__contains=[r"<label>Label\_name"],
             annotate=["all"],
         )
 
@@ -84,7 +84,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1            | 1    | One   |
             |          | choices1            | 2    | Two   |
             """,
-            xml__contains=[r"[Type: select\_one choices1]"],
+            xml__contains=[r"[Name: a] [Type: select\_one choices1]</label>"],
             annotate=["type", "name"],
         )
 
@@ -100,7 +100,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1                 | 1    | One   |
             |          | choices1                 | 2    | Two   |
             """,
-            xml__contains=[r"[Type: select\_multiple choices1]"],
+            xml__contains=[r"[Name: a] [Type: select\_multiple choices1]</label>"],
             annotate=["type", "name"],
         )
 
@@ -116,7 +116,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1                 | 1    | One   |
             |          | choices1                 | 2    | Two   |
             """,
-            xml__contains=["One [1]", "<value>1</value>"],
+            xml__contains=["<label>One [1]</label>", "<value>1</value>"],
             annotate=["type", "name"],
         )
 
@@ -135,7 +135,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1                 | 1    | Label_One |
             |          | choices1                 | 2_   | Two       |
             """,
-            xml__contains=[r"Label_One [1]", r"Two [2_]"],
+            xml__contains=[r"<label>Label_One [1]</label>", r"<label>Two [2_]</label>"],
             annotate=["all"],
         )
 
@@ -151,7 +151,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1                 | 1    | Label {One} |
             |          | choices1                 | 2    | Two         |
             """,
-            xml__contains=[r"Label [One]"],
+            xml__contains=[r"<label>Label [One] [1]</label>"],
             annotate=["all"],
         )
 
@@ -164,7 +164,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__contains=["[Name: name]", "[Type: string]"],
+            xml__contains=["[Name: name] [Type: string]</label>"],
             annotate=["all"],
         )
 
@@ -177,7 +177,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__contains=["[Name: name]", "[Type: string]"],
+            xml__contains=["[Name: name] [Type: string]</label>"],
             annotate=["type", "all"],
         )
 
@@ -193,7 +193,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | calculate | check2     |                                       | 2+1         |
             |        | note      | info       | This is info:  ${check1} / ${check2}  |             |
             """,
-            xml__contains=[r"This is info: $[check1] / $[check2]"],
+            xml__contains=[r"<label>This is info: $[check1] / $[check2]"],
             annotate=["all"],
         )
 
@@ -350,7 +350,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | string |   name   | Name  | ItemGroup1         |
             """,
             xml__contains=[
-                '<h:span style="color: blue">[Item Group: ItemGroup1] </h:span>'
+                '&lt;span style="color: blue"&gt; [Item Group: ItemGroup1]&lt;/span&gt;'
             ],
             annotate=["all"],
         )
@@ -365,7 +365,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | string    | field_name | Event_1                               |             |               |
             |        | calculate | check1     |                                       | 1+1         |               |
             |        | calculate | check2     |                                       | 2+1         |               |
-            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 | 
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 |
             """,
             xml__contains=["[Show When: $[check2] gt 1]"],
             annotate=["all"],
@@ -381,10 +381,10 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | string    | field_name | Event_1                               |             |               |
             |        | calculate | check1     |                                       | 1+1         |               |
             |        | calculate | check2     |                                       | 2+1         |               |
-            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 | 
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 |
             """,
             xml__contains=[
-                '<h:span style="color: green">[Show When: $[check2] gt 1] </h:span>'
+                '&lt;span style="color: green"&gt; [Show When: $[check2] gt 1]&lt;/span&gt;'
             ],
             annotate=["all"],
         )
@@ -399,7 +399,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | string    | field_name | Event_1                               |             |               |
             |        | calculate | check1     |                                       | 1+1         |               |
             |        | calculate | check2     |                                       | 2+1         |               |
-            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 | 
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 |
             """,
             xml__contains=["[Required: $[check2] gt 1]"],
             annotate=["all"],
@@ -415,10 +415,10 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | string    | field_name | Event_1                               |             |               |
             |        | calculate | check1     |                                       | 1+1         |               |
             |        | calculate | check2     |                                       | 2+1         |               |
-            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 | 
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 |
             """,
             xml__contains=[
-                '<h:span style="color: red">[Required: $[check2] gt 1] </h:span>'
+                '&lt;span style="color: red"&gt; [Required: $[check2] gt 1]&lt;/span&gt;'
             ],
             annotate=["all"],
         )
@@ -433,7 +433,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | string    | field_name | Event_1                               |             |               |
             |        | calculate | check1     |                                       | 1+1         |               |
             |        | calculate | check2     |                                       | 2+1         |               |
-            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 | 
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 |
             """,
             xml__contains=["[Constraint: $[check2] gt 1]"],
             annotate=["all"],
@@ -449,10 +449,10 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | string    | field_name | Event_1                               |             |               |
             |        | calculate | check1     |                                       | 1+1         |               |
             |        | calculate | check2     |                                       | 2+1         |               |
-            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 | 
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 |
             """,
             xml__contains=[
-                '<h:span style="color: magenta">[Constraint: $[check2] gt 1] </h:span>'
+                '&lt;span style="color: magenta"&gt; [Constraint: $[check2] gt 1]&lt;/span&gt;'
             ],
             annotate=["all"],
         )
