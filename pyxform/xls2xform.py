@@ -117,6 +117,7 @@ def _create_parser():
             "relevant",
             "required",
             "constraint",
+            "default",
             "all",
         ],
         help="Print XML forms with annotated label(s). This argument can be used multiple times.",

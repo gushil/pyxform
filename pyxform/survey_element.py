@@ -436,6 +436,7 @@ class SurveyElement(dict):
                 "relevant": "color: green",
                 "required": "color: red",
                 "constraint": "color: magenta",
+                "default": "color: deepskyblue",
             }
             annotated_label_node = node(html_span)
             annotated_label = self.label
