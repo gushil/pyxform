@@ -429,7 +429,7 @@ class AnnotateLabelTest(PyxformTestCase):
             name="data",
             md="""
             | survey |           |            |                                       |             |               |
-            |        | type      | name       | label                                 | calculation | constraint      |
+            |        | type      | name       | label                                 | calculation | constraint    |
             |        | string    | field_name | Event_1                               |             |               |
             |        | calculate | check1     |                                       | 1+1         |               |
             |        | calculate | check2     |                                       | 2+1         |               |
@@ -445,7 +445,7 @@ class AnnotateLabelTest(PyxformTestCase):
             name="data",
             md="""
             | survey |           |            |                                       |             |               |
-            |        | type      | name       | label                                 | calculation | constraint      |
+            |        | type      | name       | label                                 | calculation | constraint    |
             |        | string    | field_name | Event_1                               |             |               |
             |        | calculate | check1     |                                       | 1+1         |               |
             |        | calculate | check2     |                                       | 2+1         |               |
@@ -453,6 +453,40 @@ class AnnotateLabelTest(PyxformTestCase):
             """,
             xml__contains=[
                 '&lt;span style="color: magenta"&gt; [Constraint: $[check2] gt 1]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__default(self):
+        """Test annotated label for item with default check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |               |
+            |        | type      | name       | label                                 | calculation | default       |
+            |        | string    | field_name | Event_1                               |             | default_name  |
+            |        | calculate | check1     |                                       | 1+1         |               |
+            |        | calculate | check2     |                                       | 2+1         |               |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             |               |
+            """,
+            xml__contains=["[Default: default\_name]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__default_style(self):
+        """Test annotated label style for item with default check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |               |
+            |        | type      | name       | label                                 | calculation | default       |
+            |        | string    | field_name | Event_1                               |             | default_name  |
+            |        | calculate | check1     |                                       | 1+1         |               |
+            |        | calculate | check2     |                                       | 2+1         |               |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             |               |
+            """,
+            xml__contains=[
+                '&lt;span style="color: deepskyblue"&gt; [Default: default\_name]&lt;/span&gt;'
             ],
             annotate=["all"],
         )
