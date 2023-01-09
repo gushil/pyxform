@@ -389,6 +389,24 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["all"],
         )
 
+    def test_annotated_label__relevant_bind(self):
+        """Test annotated label bind for item with relevant check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |               |
+            |        | type      | name       | label                                 | calculation | relevant      |
+            |        | string    | field_name | Event_1                               |             |               |
+            |        | calculate | check1     |                                       | 1+1         |               |
+            |        | calculate | check2     |                                       | 2+1         |               |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 |
+            """,
+            xml__not_contains=[
+                '<bind nodeset="/data/info" readonly="true()" relevant=" /data/check2  &gt; 1" type="string"/>'
+            ],
+            annotate=["all"],
+        )
+
     def test_annotated_label__required(self):
         """Test annotated label for item with required check."""
         self.assertPyxformXform(
