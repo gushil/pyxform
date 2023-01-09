@@ -587,6 +587,14 @@ class SurveyElement(dict):
             if self.trigger and "calculate" in self.bind:
                 del bind_dict["calculate"]
 
+            # Do not include "relevant" binding in annotated form
+            if (
+                len(survey.annotated_fields) > 0
+                and "relevant" in survey.annotated_fields
+                and "relevant" in self.bind
+            ):
+                return None
+
             for k, v in bind_dict.items():
                 # I think all the binding conversions should be happening on
                 # the xls2json side.
