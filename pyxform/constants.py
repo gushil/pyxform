@@ -121,3 +121,4 @@ ROW_FORMAT_STRING: str = "[row : %s]"
 # Custom annotate labels
 ANNOTATE_ITEMGROUP = "Item Group"
 ANNOTATE_RELEVANT = "Show When"
+ANNOTATE_READONLY = "Read-Only"
