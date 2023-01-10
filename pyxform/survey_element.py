@@ -406,7 +406,7 @@ class SurveyElement(dict):
                 attr_value.split(underscore_str)
             )
 
-            if field_name in ["relevant", "required", "constraint"]:
+            if field_name in ["relevant", "required", "constraint", "default"]:
                 # Replace > with gt
                 attr_value = attr_value.replace(">", "gt")
 
