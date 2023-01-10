@@ -508,3 +508,33 @@ class AnnotateLabelTest(PyxformTestCase):
             ],
             annotate=["all"],
         )
+
+    def test_annotated_label__trigger(self):
+        """Test annotated label for item with trigger."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |           |                   |              |
+            |        | type      | name      | label             | trigger      |
+            |        | integer   | resprate  | Respiratory Rate: |              |
+            |        | integer   | pulse     | Pulse:            | ${resprate} |
+            """,
+            xml__contains=["[Trigger: $[resprate]]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__trigger_style(self):
+        """Test annotated label style for item with trigger."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |           |                   |              |
+            |        | type      | name      | label             | trigger      |
+            |        | integer   | resprate  | Respiratory Rate: |              |
+            |        | integer   | pulse     | Pulse:            | ${resprate} |
+            """,
+            xml__contains=[
+                '&lt;span style="color: darkgreen"&gt; [Trigger: $[resprate]]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
