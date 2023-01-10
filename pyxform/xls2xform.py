@@ -119,6 +119,7 @@ def _create_parser():
             "constraint",
             "default",
             "calculation",
+            "trigger",
             "readonly",
             "all",
         ],

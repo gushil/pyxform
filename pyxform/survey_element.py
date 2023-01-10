@@ -412,6 +412,7 @@ class SurveyElement(dict):
                 "constraint",
                 "default",
                 "calculation",
+                "trigger",
             ]:
                 # Replace > with gt
                 attr_value = attr_value.replace(">", "gt")
@@ -447,6 +448,7 @@ class SurveyElement(dict):
                 "constraint": "color: magenta",
                 "default": "color: deepskyblue",
                 "calculation": "color: mediumaquamarine",
+                "trigger": "color: darkgreen",
                 "readonly": "color: chocolate",
             }
             annotated_label_node = node(html_span)

@@ -109,6 +109,7 @@ class PyxformMarkdown:
             "constraint",
             "default",
             "calculation",
+            "trigger",
             "readonly",
         ]
         # Set annotated_fields from annotate parameter
