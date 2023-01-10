@@ -396,6 +396,9 @@ class SurveyElement(dict):
 
     def annotated_value_processing(self, value, field_name):
         attr_value = value
+        if field_name == "readonly":
+            return attr_value
+
         if field_name != "choices":
             underscore_str = "_"
             backslash_str = "\\"
@@ -437,6 +440,7 @@ class SurveyElement(dict):
                 "required": "color: red",
                 "constraint": "color: magenta",
                 "default": "color: deepskyblue",
+                "readonly": "color: chocolate",
             }
             annotated_label_node = node(html_span)
             annotated_label = self.label
@@ -460,6 +464,7 @@ class SurveyElement(dict):
                         "relevant",
                         "required",
                         "constraint",
+                        "readonly",
                     ]:
                         continue
 
@@ -493,6 +498,10 @@ class SurveyElement(dict):
                         attr_value = self.get("bind", {}).get("required", "")
                     elif val == "constraint":
                         attr_value = self.get("bind", {}).get("constraint", "")
+                    elif val == "readonly":
+                        attr_value = self.get("bind", {}).get("readonly", "")
+                        if attr_value != "":
+                            attr_label = constants.ANNOTATE_READONLY
 
                     # Annotated value style
                     if val in annotated_value_styles.keys():
