@@ -509,6 +509,40 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["all"],
         )
 
+    def test_annotated_label__calculation(self):
+        """Test annotated label for item with calculation"""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |         |            |                       |                                                                                          |          |          |
+            |        | type    | name       | label                 | calculation                                                                              | required | readonly |
+            |        | date    | dob        | Date of birth:        |                                                                                          | yes      |          |
+            |        | date    | date_visit | Date of visit:        |                                                                                          | yes      |          |
+            |        | integer | age_visit  | Age at date of visit: | round((decimal-date-time(${date_visit}) - decimal-date-time(${dob})) div 365.25 - .5, 0) |          | yes      |
+            """,
+            xml__contains=[
+                "[Calculation: round((decimal-date-time($[date\_visit]) - decimal-date-time($[dob])) div 365.25 - .5, 0)]"
+            ],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__calculation_style(self):
+        """Test annotated label style for item with calculation"""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |         |            |                       |                                                                                          |          |          |
+            |        | type    | name       | label                 | calculation                                                                              | required | readonly |
+            |        | date    | dob        | Date of birth:        |                                                                                          | yes      |          |
+            |        | date    | date_visit | Date of visit:        |                                                                                          | yes      |          |
+            |        | integer | age_visit  | Age at date of visit: | round((decimal-date-time(${date_visit}) - decimal-date-time(${dob})) div 365.25 - .5, 0) |          | yes      |
+            """,
+            xml__contains=[
+                '&lt;span style="color: mediumaquamarine"&gt; [Calculation: round((decimal-date-time($[date\_visit]) - decimal-date-time($[dob])) div 365.25 - .5, 0)]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
+
     def test_annotated_label__trigger(self):
         """Test annotated label for item with trigger."""
         self.assertPyxformXform(
@@ -535,6 +569,38 @@ class AnnotateLabelTest(PyxformTestCase):
             """,
             xml__contains=[
                 '&lt;span style="color: darkgreen"&gt; [Trigger: $[resprate]]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__readonly(self):
+        """Test annotated label for readonly item."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                      |          |                                                                                          |               
+            |        | type      | name       | label                | readonly | calculation                                                                              |
+            |        | date      | dob        | Date of Birth:       |          |                                                                                          |
+            |        | date      | date_visit | Date of Visit:       |          |                                                                                          |
+            |        | integer   | age        | Age at Date of Visit | yes      | round((decimal-date-time(${date_visit}) - decimal-date-time(${dob})) div 365.25 - .5, 0) |
+            """,
+            xml__contains=["[Read-Only: yes]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__readonly_style(self):
+        """Test annotated label style for readonly item."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                      |          |                                                                                          |               
+            |        | type      | name       | label                | readonly | calculation                                                                              |
+            |        | date      | dob        | Date of Birth:       |          |                                                                                          |
+            |        | date      | date_visit | Date of Visit:       |          |                                                                                          |
+            |        | integer   | age        | Age at Date of Visit | yes      | round((decimal-date-time(${date_visit}) - decimal-date-time(${dob})) div 365.25 - .5, 0) |
+            """,
+            xml__contains=[
+                '&lt;span style="color: chocolate"&gt; [Read-Only: yes]&lt;/span&gt;'
             ],
             annotate=["all"],
         )

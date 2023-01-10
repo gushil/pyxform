@@ -108,7 +108,9 @@ class PyxformMarkdown:
             "required",
             "constraint",
             "default",
+            "calculation",
             "trigger",
+            "readonly",
         ]
         # Set annotated_fields from annotate parameter
         annotate = kwargs.get("annotate", [])
