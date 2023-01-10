@@ -542,3 +542,35 @@ class AnnotateLabelTest(PyxformTestCase):
             ],
             annotate=["all"],
         )
+
+    def test_annotated_label__readonly(self):
+        """Test annotated label for readonly item."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                      |          |                                                                                          |               
+            |        | type      | name       | label                | readonly | calculation                                                                              |
+            |        | date      | dob        | Date of Birth:       |          |                                                                                          |
+            |        | date      | date_visit | Date of Visit:       |          |                                                                                          |
+            |        | integer   | age        | Age at Date of Visit | yes      | round((decimal-date-time(${date_visit}) - decimal-date-time(${dob})) div 365.25 - .5, 0) |
+            """,
+            xml__contains=["[Read-Only: yes]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__readonly_style(self):
+        """Test annotated label style for readonly item."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                      |          |                                                                                          |               
+            |        | type      | name       | label                | readonly | calculation                                                                              |
+            |        | date      | dob        | Date of Birth:       |          |                                                                                          |
+            |        | date      | date_visit | Date of Visit:       |          |                                                                                          |
+            |        | integer   | age        | Age at Date of Visit | yes      | round((decimal-date-time(${date_visit}) - decimal-date-time(${dob})) div 365.25 - .5, 0) |
+            """,
+            xml__contains=[
+                '&lt;span style="color: chocolate"&gt; [Read-Only: yes]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
