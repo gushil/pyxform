@@ -442,6 +442,8 @@ class SurveyElement(dict):
             html_span = "h:span"
             html_br = "h:br"
             annotated_value_styles = {
+                "type": "color: black",
+                "name": "color: orangered",
                 "itemgroup": "color: blue",
                 "relevant": "color: green",
                 "required": "color: red",
@@ -452,7 +454,6 @@ class SurveyElement(dict):
                 "readonly": "color: chocolate",
                 "external": "color: indigo",
             }
-            annotated_label_node = node(html_span)
             annotated_label = self.label
             # Choices
             if is_choices and hasattr(self, "label") and hasattr(self, "name"):
@@ -462,7 +463,6 @@ class SurveyElement(dict):
                 annotated_label = self.annotated_value_processing(
                     annotated_label, "choices"
                 )
-                annotated_label_node.appendChild(node(html_span, annotated_label))
             else:
                 annotated_label = self.annotated_value_processing(
                     annotated_label, "not choices"
@@ -480,7 +480,7 @@ class SurveyElement(dict):
                     ]:
                         continue
 
-                    attr_label = val.capitalize()
+                    attr_label = val.title()
                     attr_value = ""
                     attr_style = ""
                     if hasattr(self, val):
