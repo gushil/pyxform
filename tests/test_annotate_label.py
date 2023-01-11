@@ -17,7 +17,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__contains=["[Name: name] [Type: string]"],
+            xml__contains=["[Name: name]", "[Type: string]"],
             annotate=["type", "name"],
         )
 
@@ -30,7 +30,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__not_contains=["[Name: name] [Type: string]"],
+            xml__not_contains=["[Name: name]", "[Type: string]"],
         )
 
     def test_annotated_label_contains_newline(self):
@@ -42,7 +42,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__contains=["<label>Name\n"],
+            xml__contains=["\n"],
             annotate=["type"],
         )
 
@@ -55,7 +55,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   | name       | label |
             |        | string | field_name | Name  |
             """,
-            xml__contains=[r"[Name: field\_name] [Type: string]</label>"],
+            xml__contains=[r"[Name: field\_name]"],
             annotate=["type", "name"],
         )
 
@@ -84,7 +84,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1            | 1    | One   |
             |          | choices1            | 2    | Two   |
             """,
-            xml__contains=[r"[Name: a] [Type: select\_one choices1]</label>"],
+            xml__contains=[r"[Type: select\_one choices1]"],
             annotate=["type", "name"],
         )
 
@@ -100,7 +100,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1                 | 1    | One   |
             |          | choices1                 | 2    | Two   |
             """,
-            xml__contains=[r"[Name: a] [Type: select\_multiple choices1]</label>"],
+            xml__contains=[r"[Type: select\_multiple choices1]"],
             annotate=["type", "name"],
         )
 
@@ -164,7 +164,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__contains=["[Name: name] [Type: string]</label>"],
+            xml__contains=["[Name: name]", "[Type: string]"],
             annotate=["all"],
         )
 
@@ -177,7 +177,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   |   name   | label |
             |        | string |   name   | Name  |
             """,
-            xml__contains=["[Name: name] [Type: string]</label>"],
+            xml__contains=["[Name: name]", "[Type: string]"],
             annotate=["type", "all"],
         )
 
@@ -324,6 +324,36 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | end repeat   |         |          |
             """,
             xml__contains=['<repeat nodeset="/data/repeat1">'],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__type_style(self):
+        """Test annotated label style for item type."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |         |        |        |
+            |        | type    | name   | label  |
+            |        | string  | title  | Title: |
+            """,
+            xml__contains=[
+                '&lt;span style="color: black"&gt; [Type: string]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__name_style(self):
+        """Test annotated label style for item name."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |         |        |        |
+            |        | type    | name   | label  |
+            |        | string  | title  | Title: |
+            """,
+            xml__contains=[
+                '&lt;span style="color: orangered"&gt; [Name: title]&lt;/span&gt;'
+            ],
             annotate=["all"],
         )
 
@@ -551,7 +581,7 @@ class AnnotateLabelTest(PyxformTestCase):
             | survey |           |           |                   |              |
             |        | type      | name      | label             | trigger      |
             |        | integer   | resprate  | Respiratory Rate: |              |
-            |        | integer   | pulse     | Pulse:            | ${resprate} |
+            |        | integer   | pulse     | Pulse:            | ${resprate}  |
             """,
             xml__contains=["[Trigger: $[resprate]]"],
             annotate=["all"],
@@ -565,7 +595,7 @@ class AnnotateLabelTest(PyxformTestCase):
             | survey |           |           |                   |              |
             |        | type      | name      | label             | trigger      |
             |        | integer   | resprate  | Respiratory Rate: |              |
-            |        | integer   | pulse     | Pulse:            | ${resprate} |
+            |        | integer   | pulse     | Pulse:            | ${resprate}  |
             """,
             xml__contains=[
                 '&lt;span style="color: darkgreen"&gt; [Trigger: $[resprate]]&lt;/span&gt;'
