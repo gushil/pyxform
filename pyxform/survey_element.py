@@ -476,7 +476,7 @@ class SurveyElement(dict):
                     ]:
                         continue
 
-                    attr_label = val.capitalize()
+                    attr_label = val.title()
                     attr_value = ""
                     attr_style = ""
                     if hasattr(self, val):
