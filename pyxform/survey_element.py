@@ -442,6 +442,8 @@ class SurveyElement(dict):
             html_span = "h:span"
             html_br = "h:br"
             annotated_value_styles = {
+                "type": "color: black",
+                "name": "color: orangered",
                 "itemgroup": "color: blue",
                 "relevant": "color: green",
                 "required": "color: red",
