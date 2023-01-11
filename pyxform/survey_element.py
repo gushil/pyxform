@@ -396,7 +396,7 @@ class SurveyElement(dict):
 
     def annotated_value_processing(self, value, field_name):
         attr_value = value
-        if field_name == "readonly":
+        if field_name in ["readonly", "external"]:
             return attr_value
 
         if field_name != "choices":
@@ -450,6 +450,7 @@ class SurveyElement(dict):
                 "calculation": "color: mediumaquamarine",
                 "trigger": "color: darkgreen",
                 "readonly": "color: chocolate",
+                "external": "color: indigo",
             }
             annotated_label_node = node(html_span)
             annotated_label = self.label
@@ -475,6 +476,7 @@ class SurveyElement(dict):
                         "constraint",
                         "calculation",
                         "readonly",
+                        "external",
                     ]:
                         continue
 
@@ -514,6 +516,10 @@ class SurveyElement(dict):
                         attr_value = self.get("bind", {}).get("readonly", "")
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_READONLY
+                    elif val == "external":
+                        attr_value = self.get("bind", {}).get("oc:external", "")
+                        if attr_value != "":
+                            attr_label = constants.ANNOTATE_EXTERNAL
 
                     # Annotated value style
                     if val in annotated_value_styles.keys():

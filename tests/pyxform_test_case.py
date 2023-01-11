@@ -111,6 +111,7 @@ class PyxformMarkdown:
             "calculation",
             "trigger",
             "readonly",
+            "external",
         ]
         # Set annotated_fields from annotate parameter
         annotate = kwargs.get("annotate", [])
