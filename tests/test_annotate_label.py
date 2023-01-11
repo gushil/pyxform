@@ -578,10 +578,10 @@ class AnnotateLabelTest(PyxformTestCase):
         self.assertPyxformXform(
             name="data",
             md="""
-            | survey |           |           |                   |              |
-            |        | type      | name      | label             | trigger      |
-            |        | integer   | resprate  | Respiratory Rate: |              |
-            |        | integer   | pulse     | Pulse:            | ${resprate}  |
+            | survey |           |           |                   |             |
+            |        | type      | name      | label             | trigger     |
+            |        | integer   | resprate  | Respiratory Rate: |             |
+            |        | integer   | pulse     | Pulse:            | ${resprate} |
             """,
             xml__contains=["[Trigger: $[resprate]]"],
             annotate=["all"],
@@ -592,10 +592,10 @@ class AnnotateLabelTest(PyxformTestCase):
         self.assertPyxformXform(
             name="data",
             md="""
-            | survey |           |           |                   |              |
-            |        | type      | name      | label             | trigger      |
-            |        | integer   | resprate  | Respiratory Rate: |              |
-            |        | integer   | pulse     | Pulse:            | ${resprate}  |
+            | survey |           |           |                   |             |
+            |        | type      | name      | label             | trigger     |
+            |        | integer   | resprate  | Respiratory Rate: |             |
+            |        | integer   | pulse     | Pulse:            | ${resprate} |
             """,
             xml__contains=[
                 '&lt;span style="color: darkgreen"&gt; [Trigger: $[resprate]]&lt;/span&gt;'
@@ -631,6 +631,34 @@ class AnnotateLabelTest(PyxformTestCase):
             """,
             xml__contains=[
                 '&lt;span style="color: chocolate"&gt; [Read-Only: yes]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__external(self):
+        """Test annotated label for item with external binding."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |               |                |                   |
+            |        | type      | name          | label          | bind::oc:external |
+            |        | text      | external_info | External info: | clinicaldata      |
+            """,
+            xml__contains=["[External: clinicaldata]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__external_style(self):
+        """Test annotated label style for item with external binding."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |               |                |                   |
+            |        | type      | name          | label          | bind::oc:external |
+            |        | text      | external_info | External info: | clinicaldata      |
+            """,
+            xml__contains=[
+                '&lt;span style="color: indigo"&gt; [External: clinicaldata]&lt;/span&gt;'
             ],
             annotate=["all"],
         )
