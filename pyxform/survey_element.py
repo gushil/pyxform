@@ -451,7 +451,6 @@ class SurveyElement(dict):
                 "trigger": "color: darkgreen",
                 "readonly": "color: chocolate",
             }
-            annotated_label_node = node(html_span)
             annotated_label = self.label
             # Choices
             if is_choices and hasattr(self, "label") and hasattr(self, "name"):
@@ -461,7 +460,6 @@ class SurveyElement(dict):
                 annotated_label = self.annotated_value_processing(
                     annotated_label, "choices"
                 )
-                annotated_label_node.appendChild(node(html_span, annotated_label))
             else:
                 annotated_label = self.annotated_value_processing(
                     annotated_label, "not choices"
