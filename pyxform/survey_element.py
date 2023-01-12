@@ -449,7 +449,7 @@ class SurveyElement(dict):
                 "required": "color: red",
                 "constraint": "color: magenta",
                 "default": "color: deepskyblue",
-                "calculation": "color: mediumaquamarine",
+                "calculation": "color: seagreen",
                 "trigger": "color: darkgreen",
                 "readonly": "color: chocolate",
                 "external": "color: indigo",
