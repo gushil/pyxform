@@ -111,6 +111,7 @@ class PyxformMarkdown:
             "calculation",
             "trigger",
             "readonly",
+            "repeat_count",
             "external",
         ]
         # Set annotated_fields from annotate parameter

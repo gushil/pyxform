@@ -121,6 +121,7 @@ def _create_parser():
             "calculation",
             "trigger",
             "readonly",
+            "repeat_count",
             "external",
             "all",
         ],

@@ -413,6 +413,7 @@ class SurveyElement(dict):
                 "default",
                 "calculation",
                 "trigger",
+                "repeat_count",
             ]:
                 # Replace > with gt
                 attr_value = attr_value.replace(">", "gt")
@@ -439,8 +440,6 @@ class SurveyElement(dict):
                 constants.SELECT_ONE,
                 constants.SELECT_ALL_THAT_APPLY,
             ]
-            html_span = "h:span"
-            html_br = "h:br"
             annotated_value_styles = {
                 "type": "color: black",
                 "name": "color: orangered",
@@ -452,6 +451,7 @@ class SurveyElement(dict):
                 "calculation": "color: seagreen",
                 "trigger": "color: darkgreen",
                 "readonly": "color: chocolate",
+                "repeat_count": "color: lime",
                 "external": "color: indigo",
             }
             annotated_label = self.label
@@ -476,6 +476,7 @@ class SurveyElement(dict):
                         "constraint",
                         "calculation",
                         "readonly",
+                        "repeat_count",
                         "external",
                     ]:
                         continue
@@ -516,6 +517,20 @@ class SurveyElement(dict):
                         attr_value = self.get("bind", {}).get("readonly", "")
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_READONLY
+                    elif val == "repeat_count" and self.type == "repeat":
+                        repeat_count_model = next(
+                            filter(
+                                lambda x: x["name"] == self.name + "_count",
+                                survey.children,
+                            ),
+                            None,
+                        )
+                        if repeat_count_model is not None:
+                            attr_value = repeat_count_model.get("bind", {}).get(
+                                "calculate", ""
+                            )
+                            if attr_value != "":
+                                attr_label = constants.ANNOTATE_REPEAT_COUNT
                     elif val == "external":
                         attr_value = self.get("bind", {}).get("oc:external", "")
                         if attr_value != "":
