@@ -635,6 +635,46 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["all"],
         )
 
+    def test_annotated_label__repeat_count(self):
+        """Test annotated label for repeat item with repeat_count."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey   |                    |            |             |              |
+            |          | type               | name       | label       | repeat_count |
+            |          | begin repeat       | repeat_one | Repeat One: | 3            |
+            |          | select_one ongoing | select_1   | Ongoing?:   |              |
+            |          | end repeat         |            |             |              |
+            | choices  |                    |            |             |
+            |          | list_name          | name       | label       |
+            |          | ongoing            | 1          | Yes         |
+            |          | ongoing            | 2          | No          |
+            """,
+            xml__contains=["[Repeat Count: 3]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__repeat_count_style(self):
+        """Test annotated label style for repeat item with repeat_count."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey   |                    |            |             |              |
+            |          | type               | name       | label       | repeat_count |
+            |          | begin repeat       | repeat_one | Repeat One: | 3            |
+            |          | select_one ongoing | select_1   | Ongoing?:   |              |
+            |          | end repeat         |            |             |              |
+            | choices  |                    |            |             |
+            |          | list_name          | name       | label       |
+            |          | ongoing            | 1          | Yes         |
+            |          | ongoing            | 2          | No          |
+            """,
+            xml__contains=[
+                '&lt;span style="color: lime"&gt; [Repeat Count: 3]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
+
     def test_annotated_label__external(self):
         """Test annotated label for item with external binding."""
         self.assertPyxformXform(
