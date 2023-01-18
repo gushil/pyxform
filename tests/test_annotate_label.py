@@ -521,6 +521,38 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["all"],
         )
 
+    def test_annotated_label__default__instance_without_default_value_1(self):
+        """Test instance of field with default name should not contains its default value"""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |               |
+            |        | type      | name       | label                                 | calculation | default       |
+            |        | string    | field_name | Event_1                               |             | default_name  |
+            |        | calculate | check1     |                                       | 1+1         |               |
+            |        | calculate | check2     |                                       | 2+1         |               |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             |               |
+            """,
+            xml__not_contains=["<field_name>default_name</field_name>"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__default__instance_without_default_value_2(self):
+        """Test instance of field with default name should not contains its default value"""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |               |
+            |        | type      | name       | label                                 | calculation | default       |
+            |        | string    | field_name | Event_1                               |             | default_name  |
+            |        | calculate | check1     |                                       | 1+1         |               |
+            |        | calculate | check2     |                                       | 2+1         |               |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             |               |
+            """,
+            xml__contains=["<field_name/>"],
+            annotate=["all"],
+        )
+
     def test_annotated_label__default_style(self):
         """Test annotated label style for item with default check."""
         self.assertPyxformXform(
