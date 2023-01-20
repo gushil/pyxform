@@ -494,11 +494,20 @@ class SurveyElement(dict):
                             constants.SELECT_ALL_THAT_APPLY,
                         ]:
                             if attr_value == constants.SELECT_ONE:
-                                attr_value = attr_value.replace(" ", "_")
+                                attr_value = attr_value.replace(" ", "_")  # select_one
                             elif attr_value == constants.SELECT_ALL_THAT_APPLY:
                                 attr_value = "select_multiple"
-                            if hasattr(self, "list_name"):
+
+                            if (
+                                hasattr(self, "list_name")
+                                and getattr(self, "list_name") != ""
+                            ):
                                 attr_value += " " + getattr(self, "list_name")
+                            elif (
+                                hasattr(self, "itemset")
+                                and getattr(self, "itemset") != ""
+                            ):
+                                attr_value += "_from_file " + getattr(self, "itemset")
                     elif val == "itemgroup":
                         attr_value = self.get("bind", {}).get("oc:itemgroup", "")
                         if attr_value != "":

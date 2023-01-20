@@ -104,6 +104,30 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["type", "name"],
         )
 
+    def test_annotate_label__for_select_one_from_file(self):
+        """Test annotated label for select one from file."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                               |                        |                      |
+            |          | type                          | name                   | label                |
+            |          | select_one_from_file file.csv | select_one_from_file_1 | Select one from file |
+            """,
+            xml__contains=[r"[Type: select\_one\_from\_file file.csv]"],
+            annotate=["all"],
+        )
+
+    def test_annotate_label__for_select_multiple_from_file(self):
+        """Test annotated label for select multiple from file."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                               |                                  |                           |
+            |          | type                          | name                             | label                     |
+            |          | select_multiple_from_file file.csv | select_multiple_from_file_1 | Select multiple from file |
+            """,
+            xml__contains=[r"[Type: select\_multiple\_from\_file file.csv]"],
+            annotate=["all"],
+        )
+
     def test_annotate_label__for_choices(self):
         """Test to annotated label for choices."""
         self.assertPyxformXform(
