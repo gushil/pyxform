@@ -419,7 +419,7 @@ class SurveyElement(dict):
                 attr_value = attr_value.replace(">", "gt")
 
                 # Replace < with lt
-                attr_value = attr_value.replace(">", "gt")
+                attr_value = attr_value.replace("<", "lt")
 
         # Replace { with [
         attr_value = attr_value.replace("{", "[")
