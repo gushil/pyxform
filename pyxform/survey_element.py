@@ -508,6 +508,8 @@ class SurveyElement(dict):
                                 and getattr(self, "itemset") != ""
                             ):
                                 attr_value += "_from_file " + getattr(self, "itemset")
+                        elif attr_value == "photo":
+                            attr_value = "image"
                     elif val == "itemgroup":
                         attr_value = self.get("bind", {}).get("oc:itemgroup", "")
                         if attr_value != "":

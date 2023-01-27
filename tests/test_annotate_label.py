@@ -120,11 +120,50 @@ class AnnotateLabelTest(PyxformTestCase):
         """Test annotated label for select multiple from file."""
         self.assertPyxformXform(
             md="""
-            | survey   |                               |                                  |                           |
-            |          | type                          | name                             | label                     |
+            | survey   |                                    |                             |                           |
+            |          | type                               | name                        | label                     |
             |          | select_multiple_from_file file.csv | select_multiple_from_file_1 | Select multiple from file |
             """,
             xml__contains=[r"[Type: select\_multiple\_from\_file file.csv]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__for_image(self):
+        """Test annotated label for image."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |       |            |       |
+            |        | type  | name       | label |
+            |        | image | image_name | Image |
+            """,
+            xml__contains=[r"[Name: image\_name]", "[Type: image]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__for_audio(self):
+        """Test annotated label for audio."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |       |            |       |
+            |        | type  | name       | label |
+            |        | audio | audio_name | audio |
+            """,
+            xml__contains=[r"[Name: audio\_name]", "[Type: audio]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__for_video(self):
+        """Test annotated label for video."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |       |            |       |
+            |        | type  | name       | label |
+            |        | video | video_name | video |
+            """,
+            xml__contains=[r"[Name: video\_name]", "[Type: video]"],
             annotate=["all"],
         )
 
