@@ -82,6 +82,14 @@ class XPathHelper:
           /x:value[not(@form) and text()='{label}']
         """
 
+    def question_itext_like_label(self, lang, label):
+        """The Question label value is in the itext."""
+        return f"""
+        /h:html/h:head/x:model/x:itext/x:translation[@lang='{lang}']
+          /x:text[@id='/test/{self.question_name}:label']
+          /x:value[not(@form) and contains(text(),'{label}')]
+        """
+
     def question_itext_hint(self, lang, hint):
         """The Question hint value is in the itext."""
         return f"""
@@ -620,6 +628,31 @@ class TestTranslationsSurvey(PyxformTestCase):
                 self.xp.language_is_not_default("eng"),
                 self.xp.language_no_itext(DEFAULT_LANG),
             ],
+            warnings_count=0,
+        )
+
+    def test_no_default__two_translation__annotated_label(self):
+        """Should find language translations for annotated label."""
+        md = """
+        | survey |      |      |                |                   |
+        |        | type | name | label::english | label::indonesian |
+        |        | note | n1   | note label     | catatan           |
+        """
+        self.assertPyxformXform(
+            name="test",
+            md=md,
+            xml__xpath_match=[
+                self.xp.question_label_references_itext(),
+                self.xp.question_itext_like_label("english", "note label"),
+                self.xp.question_itext_like_label("english", "Type: note"),
+                self.xp.question_itext_like_label("english", "Name: n1"),
+                self.xp.question_itext_like_label("indonesian", "catatan"),
+                self.xp.question_itext_like_label("indonesian", "Type: note"),
+                self.xp.question_itext_like_label("indonesian", "Name: n1"),
+                self.xp.language_is_not_default("english"),
+                self.xp.language_no_itext(DEFAULT_LANG),
+            ],
+            annotate=["all"],
             warnings_count=0,
         )
 

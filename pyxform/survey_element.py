@@ -356,6 +356,10 @@ class SurveyElement(dict):
 
             if type(label_or_hint) is dict:
                 for lang, text in label_or_hint.items():
+                    if display_element == "label":
+                        annotated_label = self.get_annotated_label(lang)
+                        if annotated_label != text:
+                            text = annotated_label
                     yield {
                         "display_element": display_element,  # Not used
                         "path": self._translation_path(display_element),
@@ -429,12 +433,18 @@ class SurveyElement(dict):
 
         return attr_value
 
-    def get_annotated_label(self):
+    def get_annotated_label(self, lang=None):
         survey = self.get_root()
         is_annotated = len(self.get_root().annotated_fields) > 0
 
         if not is_annotated:
-            return self.label
+            if not isinstance(self.label, dict):
+                return self.label
+            else:
+                if lang is not None:
+                    return self.label[lang]
+                else:
+                    return next(iter(self.label))
         else:
             is_choices = self.parent.type in [
                 constants.SELECT_ONE,
@@ -454,12 +464,22 @@ class SurveyElement(dict):
                 "repeat_count": "color: lime",
                 "external": "color: indigo",
             }
-            annotated_label = self.label
+            if not isinstance(self.label, dict):
+                annotated_label = self.label
+            else:
+                if lang is not None:
+                    annotated_label = self.label[lang]
+                else:
+                    annotated_label = next(iter(self.label))
             # Choices
             if is_choices and hasattr(self, "label") and hasattr(self, "name"):
-                annotated_label = "{} [{}]".format(
-                    getattr(self, "label"), getattr(self, "name")
-                )
+                choice_label = getattr(self, "label")
+                if isinstance(choice_label, dict):
+                    if lang is not None:
+                        choice_label = choice_label[lang]
+                    else:
+                        choice_label = next(iter(choice_label))
+                annotated_label = "{} [{}]".format(choice_label, getattr(self, "name"))
                 annotated_label = self.annotated_value_processing(
                     annotated_label, "choices"
                 )
