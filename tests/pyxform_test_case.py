@@ -111,6 +111,7 @@ class PyxformMarkdown:
             "calculation",
             "trigger",
             "readonly",
+            "image",
             "repeat_count",
             "external",
         ]

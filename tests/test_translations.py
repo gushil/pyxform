@@ -656,6 +656,27 @@ class TestTranslationsSurvey(PyxformTestCase):
             warnings_count=0,
         )
 
+    def test_no_default__no_translation__annotated_label_with_image(self):
+        """Should find image for annotated label."""
+        md = """
+        | survey |      |      |            |         |
+        |        | type | name | label      | image   |
+        |        | note | n1   | note label | img.jpg |
+        """
+        self.assertPyxformXform(
+            name="test",
+            md=md,
+            xml__xpath_match=[
+                self.xp.question_label_references_itext(),
+                self.xp.question_itext_like_label(DEFAULT_LANG, "note label"),
+                self.xp.question_itext_like_label(DEFAULT_LANG, "Type: note"),
+                self.xp.question_itext_like_label(DEFAULT_LANG, "Name: n1"),
+                self.xp.question_itext_like_label(DEFAULT_LANG, "Image: img.jpg"),
+            ],
+            annotate=["all"],
+            warnings_count=0,
+        )
+
     def test_no_default__one_translation__label_and_hint_with_image(self):
         """Should find language translations for label, hint, and image."""
         md = """
