@@ -663,7 +663,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | integer | age_visit  | Age at date of visit: | round((decimal-date-time(${date_visit}) - decimal-date-time(${dob})) div 365.25 - .5, 0) |          | yes      |
             """,
             xml__contains=[
-                '&lt;span style="color: seagreen"&gt; [Calculation: round((decimal-date-time($[date\_visit]) - decimal-date-time($[dob])) div 365.25 - .5, 0)]&lt;/span&gt;'
+                '&lt;span style="color: maroon"&gt; [Calculation: round((decimal-date-time($[date\_visit]) - decimal-date-time($[dob])) div 365.25 - .5, 0)]&lt;/span&gt;'
             ],
             annotate=["all"],
         )
