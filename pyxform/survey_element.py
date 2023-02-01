@@ -461,6 +461,7 @@ class SurveyElement(dict):
                 "calculation": "color: maroon",
                 "trigger": "color: darkgreen",
                 "readonly": "color: chocolate",
+                "image": "color: darkviolet",
                 "repeat_count": "color: lime",
                 "external": "color: indigo",
             }
@@ -496,6 +497,7 @@ class SurveyElement(dict):
                         "constraint",
                         "calculation",
                         "readonly",
+                        "image",
                         "repeat_count",
                         "external",
                     ]:
@@ -548,6 +550,8 @@ class SurveyElement(dict):
                         attr_value = self.get("bind", {}).get("readonly", "")
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_READONLY
+                    elif val == "image":
+                        attr_value = self.get("media", {}).get("image", "")
                     elif val == "repeat_count" and self.type == "repeat":
                         repeat_count_model = next(
                             filter(
