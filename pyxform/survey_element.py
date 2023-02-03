@@ -433,18 +433,24 @@ class SurveyElement(dict):
 
         return attr_value
 
+    def get_field_or_lang_dict_value(self, field, lang=None):
+        if not isinstance(field, dict):
+            return field
+        else:
+            try:
+                if lang is not None:
+                    return field[lang]
+                else:
+                    return next(iter(field))
+            except KeyError:
+                return ""
+
     def get_annotated_label(self, lang=None):
         survey = self.get_root()
         is_annotated = len(self.get_root().annotated_fields) > 0
 
         if not is_annotated:
-            if not isinstance(self.label, dict):
-                return self.label
-            else:
-                if lang is not None:
-                    return self.label[lang]
-                else:
-                    return next(iter(self.label))
+            return self.get_field_or_lang_dict_value(self.label, lang)
         else:
             is_choices = self.parent.type in [
                 constants.SELECT_ONE,
@@ -465,21 +471,12 @@ class SurveyElement(dict):
                 "repeat_count": "color: lime",
                 "external": "color: indigo",
             }
-            if not isinstance(self.label, dict):
-                annotated_label = self.label
-            else:
-                if lang is not None:
-                    annotated_label = self.label[lang]
-                else:
-                    annotated_label = next(iter(self.label))
+            annotated_label = self.get_field_or_lang_dict_value(self.label, lang)
             # Choices
             if is_choices and hasattr(self, "label") and hasattr(self, "name"):
-                choice_label = getattr(self, "label")
-                if isinstance(choice_label, dict):
-                    if lang is not None:
-                        choice_label = choice_label[lang]
-                    else:
-                        choice_label = next(iter(choice_label))
+                choice_label = self.get_field_or_lang_dict_value(
+                    getattr(self, "label"), lang
+                )
                 annotated_label = "{} [{}]".format(choice_label, getattr(self, "name"))
                 annotated_label = self.annotated_value_processing(
                     annotated_label, "choices"
@@ -537,21 +534,31 @@ class SurveyElement(dict):
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_ITEMGROUP
                     elif val == "relevant":
-                        attr_value = self.get("bind", {}).get("relevant", "")
+                        attr_value = self.get_field_or_lang_dict_value(
+                            self.get("bind", {}).get("relevant", ""), lang
+                        )
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_RELEVANT
                     elif val == "required":
-                        attr_value = self.get("bind", {}).get("required", "")
+                        attr_value = self.get_field_or_lang_dict_value(
+                            self.get("bind", {}).get("required", ""), lang
+                        )
                     elif val == "constraint":
-                        attr_value = self.get("bind", {}).get("constraint", "")
+                        attr_value = self.get_field_or_lang_dict_value(
+                            self.get("bind", {}).get("constraint", ""), lang
+                        )
                     elif val == "calculation":
                         attr_value = self.get("bind", {}).get("calculate", "")
                     elif val == "readonly":
-                        attr_value = self.get("bind", {}).get("readonly", "")
+                        attr_value = self.get_field_or_lang_dict_value(
+                            self.get("bind", {}).get("readonly", ""), lang
+                        )
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_READONLY
                     elif val == "image":
-                        attr_value = self.get("media", {}).get("image", "")
+                        attr_value = self.get_field_or_lang_dict_value(
+                            self.get("media", {}).get("image", ""), lang
+                        )
                     elif val == "repeat_count" and self.type == "repeat":
                         repeat_count_model = next(
                             filter(

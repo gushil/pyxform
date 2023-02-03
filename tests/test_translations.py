@@ -677,6 +677,119 @@ class TestTranslationsSurvey(PyxformTestCase):
             warnings_count=0,
         )
 
+    def test_no_default__two_translation__annotated_label_with_image(self):
+        """Should find language translations for annotated label with translated image."""
+        md = """
+        | survey |      |      |                |                   |                |                   |
+        |        | type | name | label::english | label::indonesian | image::english | image::indonesian |
+        |        | note | n1   | note label     | catatan           | english.jpg    | indonesian.jpg    |
+        """
+        self.assertPyxformXform(
+            name="test",
+            md=md,
+            xml__xpath_match=[
+                self.xp.question_label_references_itext(),
+                self.xp.question_itext_like_label("english", "Image: english.jpg"),
+                self.xp.question_itext_like_label("indonesian", "Image: indonesian.jpg"),
+            ],
+            annotate=["all"],
+            warnings_count=0,
+        )
+
+    def test_no_default__two_translation__annotated_label_with_relevant_check(self):
+        """Should find language translations for annotated label with relevant check."""
+        md = """
+        | survey |                  |            |                |                   |                   |                      |
+        |        | type             | name       | label::english | label::indonesian | relevant::english | relevant::indonesian |
+        |        | select_one show  | select_1_s | show?          | sembunyikan?      |                   |                      |
+        |        | note             | n1         | note label     | catatan           | ${select_1_s} = 1 | ${select_1_s} = 2    |
+        | choices  |             |            |             |
+        |          | list_name   | name       | label       |
+        |          | show        | 1          | Yes         |
+        |          | show        | 2          | No          |
+        """
+        self.assertPyxformXform(
+            name="test",
+            md=md,
+            xml__xpath_match=[
+                self.xp.question_label_references_itext(),
+                self.xp.question_itext_like_label(
+                    "english", "Show When: $[select\_1\_s] = 1"
+                ),
+                self.xp.question_itext_like_label(
+                    "indonesian", "Show When: $[select\_1\_s] = 2"
+                ),
+            ],
+            annotate=["all"],
+            warnings_count=0,
+        )
+
+    def test_no_default__two_translation__annotated_label_with_required_check(self):
+        """Should find language translations for annotated label with required check."""
+        md = """
+        | survey |                  |            |                |                   |                   |                      |
+        |        | type             | name       | label::english | label::indonesian | required::english | required::indonesian |
+        |        | note             | n1         | note label     | catatan           | true              | false                |
+        """
+        self.assertPyxformXform(
+            name="test",
+            md=md,
+            xml__xpath_match=[
+                self.xp.question_label_references_itext(),
+                self.xp.question_itext_like_label("english", "Required: true"),
+                self.xp.question_itext_like_label("indonesian", "Required: false"),
+            ],
+            annotate=["all"],
+            warnings_count=0,
+        )
+
+    def test_no_default__two_translation__annotated_label_with_constraint_check(self):
+        """Should find language translations for annotated label with constraint check."""
+        md = """
+        | survey |                  |            |                |                   |                     |                        |
+        |        | type             | name       | label::english | label::indonesian | constraint::english | constraint::indonesian |
+        |        | select_one show  | select_1_s | show?          | sembunyikan?      |                     |                        |
+        |        | note             | n1         | note label     | catatan           | ${select_1_s} = 1   | ${select_1_s} = 2      |
+        | choices  |             |            |             |
+        |          | list_name   | name       | label       |
+        |          | show        | 1          | Yes         |
+        |          | show        | 2          | No          |
+        """
+        self.assertPyxformXform(
+            name="test",
+            md=md,
+            xml__xpath_match=[
+                self.xp.question_label_references_itext(),
+                self.xp.question_itext_like_label(
+                    "english", "Constraint: $[select\_1\_s] = 1"
+                ),
+                self.xp.question_itext_like_label(
+                    "indonesian", "Constraint: $[select\_1\_s] = 2"
+                ),
+            ],
+            annotate=["all"],
+            warnings_count=0,
+        )
+
+    def test_no_default__two_translation__annotated_label_with_readonly_check(self):
+        """Should find language translations for annotated label with readonly check."""
+        md = """
+        | survey |                  |            |                |                   |                   |                      |
+        |        | type             | name       | label::english | label::indonesian | readonly::english | readonly::indonesian |
+        |        | note             | n1         | note label     | catatan           | yes               | no                   |
+        """
+        self.assertPyxformXform(
+            name="test",
+            md=md,
+            xml__xpath_match=[
+                self.xp.question_label_references_itext(),
+                self.xp.question_itext_like_label("english", "Read-Only: yes"),
+                self.xp.question_itext_like_label("indonesian", "Read-Only: no"),
+            ],
+            annotate=["all"],
+            warnings_count=0,
+        )
+
     def test_no_default__one_translation__label_and_hint_with_image(self):
         """Should find language translations for label, hint, and image."""
         md = """
