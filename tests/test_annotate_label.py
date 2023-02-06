@@ -3,6 +3,7 @@
 Annotate label test module.
 """
 from tests.pyxform_test_case import PyxformTestCase
+from pyxform import constants
 
 
 class AnnotateLabelTest(PyxformTestCase):
@@ -112,7 +113,19 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | type                          | name                   | label                |
             |          | select_one_from_file file.csv | select_one_from_file_1 | Select one from file |
             """,
-            xml__contains=[r"[Type: select\_one\_from\_file file.csv]"],
+            xml__contains=[r"[Type: select\_one\_from\_file oc\_emptyexternallist.csv]"],
+            annotate=["all"],
+        )
+
+    def test_annotate_label__message_for_select_one_from_file(self):
+        """Test annotated label message for select one from file."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                               |                        |                      |
+            |          | type                          | name                   | label                |
+            |          | select_one_from_file file.csv | select_one_from_file_1 | Select one from file |
+            """,
+            xml__contains=[constants.ANNOTATE_SELECT_ONE_FROM_FILE_MESSAGE],
             annotate=["all"],
         )
 
@@ -124,7 +137,21 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | type                               | name                        | label                     |
             |          | select_multiple_from_file file.csv | select_multiple_from_file_1 | Select multiple from file |
             """,
-            xml__contains=[r"[Type: select\_multiple\_from\_file file.csv]"],
+            xml__contains=[
+                r"[Type: select\_multiple\_from\_file oc\_emptyexternallist.csv]"
+            ],
+            annotate=["all"],
+        )
+
+    def test_annotate_label__message_for_select_multiple_from_file(self):
+        """Test annotated label message for select multiple from file."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                                    |                             |                           |
+            |          | type                               | name                        | label                     |
+            |          | select_multiple_from_file file.csv | select_multiple_from_file_1 | Select multiple from file |
+            """,
+            xml__contains=[constants.ANNOTATE_SELECT_ONE_FROM_FILE_MESSAGE],
             annotate=["all"],
         )
 
