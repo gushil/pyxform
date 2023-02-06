@@ -456,6 +456,7 @@ class SurveyElement(dict):
                 constants.SELECT_ONE,
                 constants.SELECT_ALL_THAT_APPLY,
             ]
+            is_select_one_from_file = False
             annotated_value_styles = {
                 "type": "color: black",
                 "name": "color: orangered",
@@ -526,7 +527,11 @@ class SurveyElement(dict):
                                 hasattr(self, "itemset")
                                 and getattr(self, "itemset") != ""
                             ):
-                                attr_value += "_from_file " + getattr(self, "itemset")
+                                is_select_one_from_file = True
+                                attr_value += (
+                                    "_from_file "
+                                    + constants.ANNOTATE_SELECT_ONE_FROM_FILE_DUMMY_FILENAME
+                                )
                         elif attr_value == "photo":
                             attr_value = "image"
                     elif val == "itemgroup":
@@ -602,6 +607,10 @@ class SurveyElement(dict):
                             annotated_label += '<span style="{}">{}</span>'.format(
                                 attr_style, annotated_label_value
                             )
+
+            if is_select_one_from_file:
+                annotated_label += "\n\n"
+                annotated_label += constants.ANNOTATE_SELECT_ONE_FROM_FILE_MESSAGE
 
             return annotated_label
 
