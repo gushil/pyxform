@@ -528,10 +528,7 @@ class SurveyElement(dict):
                                 and getattr(self, "itemset") != ""
                             ):
                                 is_select_one_from_file = True
-                                attr_value += (
-                                    "_from_file "
-                                    + constants.ANNOTATE_SELECT_ONE_FROM_FILE_DUMMY_FILENAME
-                                )
+                                attr_value += "_from_file " + getattr(self, "itemset")
                         elif attr_value == "photo":
                             attr_value = "image"
                     elif val == "itemgroup":

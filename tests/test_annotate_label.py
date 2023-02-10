@@ -113,7 +113,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | type                          | name                   | label                |
             |          | select_one_from_file file.csv | select_one_from_file_1 | Select one from file |
             """,
-            xml__contains=[r"[Type: select\_one\_from\_file oc\_emptyexternallist.csv]"],
+            xml__contains=[r"[Type: select\_one\_from\_file file.csv]"],
             annotate=["all"],
         )
 
@@ -137,9 +137,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | type                               | name                        | label                     |
             |          | select_multiple_from_file file.csv | select_multiple_from_file_1 | Select multiple from file |
             """,
-            xml__contains=[
-                r"[Type: select\_multiple\_from\_file oc\_emptyexternallist.csv]"
-            ],
+            xml__contains=[r"[Type: select\_multiple\_from\_file file.csv]"],
             annotate=["all"],
         )
 
