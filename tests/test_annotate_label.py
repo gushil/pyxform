@@ -129,6 +129,18 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["all"],
         )
 
+    def test_annotate_label__newline_for_select_one_from_file(self):
+        """Test annotated label newline for select one from file."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                               |                        |                      |
+            |          | type                          | name                   | label                |
+            |          | select_one_from_file file.csv | select_one_from_file_1 | Select one from file |
+            """,
+            xml__contains=["&lt;br&gt;"],
+            annotate=["all"],
+        )
+
     def test_annotate_label__for_select_multiple_from_file(self):
         """Test annotated label for select multiple from file."""
         self.assertPyxformXform(
@@ -150,6 +162,18 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | select_multiple_from_file file.csv | select_multiple_from_file_1 | Select multiple from file |
             """,
             xml__contains=[constants.ANNOTATE_SELECT_ONE_FROM_FILE_MESSAGE],
+            annotate=["all"],
+        )
+
+    def test_annotate_label__newline_for_select_multiple_from_file(self):
+        """Test annotated label newline for select multiple from file."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                                    |                             |                           |
+            |          | type                               | name                        | label                     |
+            |          | select_multiple_from_file file.csv | select_multiple_from_file_1 | Select multiple from file |
+            """,
+            xml__contains=["&lt;br&gt;"],
             annotate=["all"],
         )
 
