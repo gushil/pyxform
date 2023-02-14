@@ -606,7 +606,7 @@ class SurveyElement(dict):
                             )
 
             if is_select_one_from_file:
-                annotated_label += "\n\n"
+                annotated_label += "<br>"
                 annotated_label += constants.ANNOTATE_SELECT_ONE_FROM_FILE_MESSAGE
 
             return annotated_label
