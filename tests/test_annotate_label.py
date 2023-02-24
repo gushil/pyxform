@@ -69,7 +69,36 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type   | name       | label       |
             |        | string | field_name | Label_name  |
             """,
-            xml__contains=[r"<label>Label\_name"],
+            xml__contains=[r"<label>Label_name"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label_with_underscore_in_ref_in_label_name(self):
+        """Test annotated label with underscore in item reference in label name."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |         |         |                    |
+            |        | type    |   name  | label              |
+            |        | integer | int_num | Number             |
+            |        | string  | str_num | Name_of ${int_num} |
+            """,
+            xml__contains=[r"<label>Name_of $[int\_num]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label_with_underscore_in_multiple_ref_in_label_name(self):
+        """Test annotated label with underscore in multiple item reference in label name."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |         |           |                                       |
+            |        | type    |   name    | label                                 |
+            |        | integer | int_num_1 | Number 1                              |
+            |        | integer | int_num_2 | Number 2                              |
+            |        | string  | str_num   | Name_of ${int_num_1} and ${int_num_2} |
+            """,
+            xml__contains=[r"<label>Name_of $[int\_num\_1] and $[int\_num\_2]"],
             annotate=["all"],
         )
 
