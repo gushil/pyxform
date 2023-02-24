@@ -531,14 +531,14 @@ class AnnotateLabelTest(PyxformTestCase):
         self.assertPyxformXform(
             name="data",
             md="""
-            | survey |           |            |                                       |             |               |
-            |        | type      | name       | label                                 | calculation | relevant      |
-            |        | string    | field_name | Event_1                               |             |               |
-            |        | calculate | check1     |                                       | 1+1         |               |
-            |        | calculate | check2     |                                       | 2+1         |               |
-            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 |
+            | survey |           |            |                                       |             |                   |
+            |        | type      | name       | label                                 | calculation | relevant          |
+            |        | string    | field_name | Event_1                               |             |                   |
+            |        | calculate | check1     |                                       | 1+1         |                   |
+            |        | calculate | check2     |                                       | 2+1         |                   |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 2 |
             """,
-            xml__contains=["[Show When: $[check2] gt 1]"],
+            xml__contains=["[Show When: $[check2] gt 1 \* 2]"],
             annotate=["all"],
         )
 
@@ -583,14 +583,14 @@ class AnnotateLabelTest(PyxformTestCase):
         self.assertPyxformXform(
             name="data",
             md="""
-            | survey |           |            |                                       |             |               |
-            |        | type      | name       | label                                 | calculation | required      |
-            |        | string    | field_name | Event_1                               |             |               |
-            |        | calculate | check1     |                                       | 1+1         |               |
-            |        | calculate | check2     |                                       | 2+1         |               |
-            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 |
+            | survey |           |            |                                       |             |                   |
+            |        | type      | name       | label                                 | calculation | required          |
+            |        | string    | field_name | Event_1                               |             |                   |
+            |        | calculate | check1     |                                       | 1+1         |                   |
+            |        | calculate | check2     |                                       | 2+1         |                   |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 3 |
             """,
-            xml__contains=["[Required: $[check2] gt 1]"],
+            xml__contains=["[Required: $[check2] gt 1 \* 3]"],
             annotate=["all"],
         )
 
@@ -617,14 +617,14 @@ class AnnotateLabelTest(PyxformTestCase):
         self.assertPyxformXform(
             name="data",
             md="""
-            | survey |           |            |                                       |             |               |
-            |        | type      | name       | label                                 | calculation | constraint    |
-            |        | string    | field_name | Event_1                               |             |               |
-            |        | calculate | check1     |                                       | 1+1         |               |
-            |        | calculate | check2     |                                       | 2+1         |               |
-            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 |
+            | survey |           |            |                                       |             |                   |
+            |        | type      | name       | label                                 | calculation | constraint        |
+            |        | string    | field_name | Event_1                               |             |                   |
+            |        | calculate | check1     |                                       | 1+1         |                   |
+            |        | calculate | check2     |                                       | 2+1         |                   |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 4 |
             """,
-            xml__contains=["[Constraint: $[check2] gt 1]"],
+            xml__contains=["[Constraint: $[check2] gt 1 \* 4]"],
             annotate=["all"],
         )
 

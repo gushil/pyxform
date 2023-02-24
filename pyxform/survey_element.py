@@ -439,6 +439,16 @@ class SurveyElement(dict):
                 # Replace < with lt
                 attr_value = attr_value.replace("<", "lt")
 
+            if field_name in [
+                "relevant",
+                "constraint",
+                "default",
+                "calculation",
+                "required",
+            ]:
+                # Prepend * with \
+                attr_value = attr_value.replace("*", "\*")
+
         # Replace { with [
         attr_value = attr_value.replace("{", "[")
 
