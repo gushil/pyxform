@@ -399,16 +399,30 @@ class SurveyElement(dict):
         )
 
     def annotated_value_processing(self, value, field_name):
+
+        # Prepend all underscores (_) with backslash (\)
+        def prepend_underscore_with_backslash(value):
+            underscore_str = "_"
+            backslash_str = "\\"
+            value = (backslash_str + underscore_str).join(value.split(underscore_str))
+
+            return value
+
         attr_value = value
         if field_name in ["readonly", "external"]:
             return attr_value
 
         if field_name != "choices":
-            underscore_str = "_"
-            backslash_str = "\\"
-            attr_value = (backslash_str + underscore_str).join(
-                attr_value.split(underscore_str)
-            )
+            if field_name == "label":
+                refs_in_label = [
+                    _.group() for _ in re.finditer(BRACKETED_TAG_REGEX, value)
+                ]
+                if len(refs_in_label) > 0:
+                    for ref in refs_in_label:
+                        prepended_ref = prepend_underscore_with_backslash(ref)
+                        attr_value = attr_value.replace(ref, prepended_ref)
+            else:
+                attr_value = prepend_underscore_with_backslash(attr_value)
 
             if field_name in [
                 "relevant",
@@ -472,8 +486,12 @@ class SurveyElement(dict):
                 "repeat_count": "color: lime",
                 "external": "color: indigo",
             }
+
+            # Item label
             annotated_label = self.get_field_or_lang_dict_value(self.label, lang)
-            # Choices
+            annotated_label = self.annotated_value_processing(annotated_label, "label")
+
+            # if item is choices
             if is_choices and hasattr(self, "label") and hasattr(self, "name"):
                 choice_label = self.get_field_or_lang_dict_value(
                     getattr(self, "label"), lang
@@ -483,9 +501,6 @@ class SurveyElement(dict):
                     annotated_label, "choices"
                 )
             else:
-                annotated_label = self.annotated_value_processing(
-                    annotated_label, "not choices"
-                )
                 # Non-Choice fields
                 for idx, val in enumerate(survey.annotated_fields):
                     if not hasattr(self, val) and val not in [
