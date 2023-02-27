@@ -702,13 +702,15 @@ class SurveyElement(dict):
             if self.trigger and "calculate" in self.bind:
                 del bind_dict["calculate"]
 
-            # Do not include "relevant" binding in annotated form
-            if (
-                len(survey.annotated_fields) > 0
-                and "relevant" in survey.annotated_fields
-                and "relevant" in self.bind
-            ):
-                return None
+            # Annotated form bind handling
+            if len(survey.annotated_fields) > 0:
+                # Do not include "relevant" binding in annotated form
+                if "relevant" in survey.annotated_fields and "relevant" in self.bind:
+                    return None
+                elif (
+                    "calculation" in survey.annotated_fields and "calculate" in self.bind
+                ):
+                    bind_dict["calculate"] = "string('')"
 
             for k, v in bind_dict.items():
                 # I think all the binding conversions should be happening on
