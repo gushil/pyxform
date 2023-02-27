@@ -34,15 +34,11 @@ class Question(SurveyElement):
         for key, value in attributes.items():
             attributes[key] = survey.insert_xpaths(value, self)
 
-        if (
-            self.get("default")
-            and not default_is_dynamic(self.default, self.type)
-            and (
-                len(survey.annotated_fields) == 0
-                or "default" not in survey.annotated_fields
-            )
-        ):
-            return node(self.name, str(self.get("default")), **attributes)
+        if self.get("default"):
+            if len(survey.annotated_fields) > 0 and "default" in survey.annotated_fields:
+                return node(self.name, str("string('')"), **attributes)
+            elif not default_is_dynamic(self.default, self.type):
+                return node(self.name, str(self.get("default")), **attributes)
         return node(self.name, **attributes)
 
     def xml_control(self):

@@ -690,7 +690,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | calculate | check2     |                                       | 2+1         |               |
             |        | note      | info       | This is info:  ${check1} / ${check2}  |             |               |
             """,
-            xml__contains=["<field_name/>"],
+            xml__contains=["<field_name>string('')</field_name>"],
             annotate=["all"],
         )
 
@@ -743,6 +743,21 @@ class AnnotateLabelTest(PyxformTestCase):
             xml__contains=[
                 '&lt;span style="color: maroon"&gt; [Calculation: round((decimal-date-time($[date\_visit]) - decimal-date-time($[dob])) div 365.25 - .5, 0)]&lt;/span&gt;'
             ],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__calculation_bind(self):
+        """Test annotated label bind for item with calculation"""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |         |            |                       |                                                                                          |          |          |
+            |        | type    | name       | label                 | calculation                                                                              | required | readonly |
+            |        | date    | dob        | Date of birth:        |                                                                                          | yes      |          |
+            |        | date    | date_visit | Date of visit:        |                                                                                          | yes      |          |
+            |        | integer | age_visit  | Age at date of visit: | round((decimal-date-time(${date_visit}) - decimal-date-time(${dob})) div 365.25 - .5, 0) |          | yes      |
+            """,
+            xml__contains=['<bind calculate="string(\'\')" nodeset="/data/age_visit"'],
             annotate=["all"],
         )
 
