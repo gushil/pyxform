@@ -36,7 +36,7 @@ class Question(SurveyElement):
 
         if self.get("default"):
             if len(survey.annotated_fields) > 0 and "default" in survey.annotated_fields:
-                return node(self.name, str("string('')"), **attributes)
+                return node(self.name, **attributes)
             elif not default_is_dynamic(self.default, self.type):
                 return node(self.name, str(self.get("default")), **attributes)
         return node(self.name, **attributes)

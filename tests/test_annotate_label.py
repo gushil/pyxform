@@ -690,7 +690,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | calculate | check2     |                                       | 2+1         |               |
             |        | note      | info       | This is info:  ${check1} / ${check2}  |             |               |
             """,
-            xml__contains=["<field_name>string('')</field_name>"],
+            xml__contains=["<field_name/>"],
             annotate=["all"],
         )
 
