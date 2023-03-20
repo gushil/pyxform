@@ -5,6 +5,7 @@ XLS-to-dict and csv-to-dict are essentially backends for xls2json.
 import csv
 import datetime
 import re
+import warnings
 from collections import OrderedDict
 from functools import reduce
 from io import StringIO
@@ -234,7 +235,11 @@ def xlsx_to_dict(path_or_file):
         first_row = (c.value for c in next(sheet.rows, []))
         headers = get_excel_column_headers(first_row=first_row)
         row_iter = sheet.iter_rows(min_row=2, max_col=len(headers))
-        rows = get_excel_rows(headers=headers, rows=row_iter, cell_func=xlsx_clean_cell)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            rows = get_excel_rows(
+                headers=headers, rows=row_iter, cell_func=xlsx_clean_cell
+            )
         column_header_list = [key for key in headers if key is not None]
         return rows, _list_to_dict_list(column_header_list)
 
