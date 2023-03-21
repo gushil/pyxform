@@ -382,10 +382,19 @@ class SurveyElement(dict):
         )
 
     def get_setvalue_node_for_dynamic_default(self, in_repeat=False):
-        if not self.default or not default_is_dynamic(self.default, self.type):
+        survey = self.get_root()
+        if (
+            not self.default
+            or not default_is_dynamic(self.default, self.type)
+            or (
+                default_is_dynamic(self.default, self.type)
+                and len(survey.annotated_fields) > 0
+                and "default" in survey.annotated_fields
+            )
+        ):
             return None
 
-        default_with_xpath_paths = self.get_root().insert_xpaths(self.default, self)
+        default_with_xpath_paths = survey.insert_xpaths(self.default, self)
 
         triggering_events = "odk-instance-first-load"
         if in_repeat:

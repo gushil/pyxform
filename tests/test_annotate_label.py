@@ -694,6 +694,21 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["all"],
         )
 
+    def test_annotated_label__dynamic_default__no_setvalue(self):
+        """Test no setvalue of field with dynamic default"""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |         |            |             |             |          |
+            |        | type    | name       | label       | calculation | default  |
+            |        | date    | field_date | Event_1     |             | today()  |
+            """,
+            xml__not_contains=[
+                '<setvalue event="odk-instance-first-load" ref="/data/field_date"'
+            ],
+            annotate=["all"],
+        )
+
     def test_annotated_label__default_style(self):
         """Test annotated label style for item with default check."""
         self.assertPyxformXform(
