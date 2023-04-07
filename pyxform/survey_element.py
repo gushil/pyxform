@@ -418,7 +418,7 @@ class SurveyElement(dict):
             return value
 
         attr_value = value
-        if field_name in ["readonly", "external"]:
+        if field_name in ["readonly", "external", "constraint_type"]:
             return attr_value
 
         if field_name != "choices":
@@ -497,6 +497,7 @@ class SurveyElement(dict):
                 "relevant": "color: green",
                 "required": "color: red",
                 "constraint": "color: magenta",
+                "constraint_type": "color: darkolivegreen",
                 "default": "color: deepskyblue",
                 "calculation": "color: maroon",
                 "trigger": "color: darkgreen",
@@ -527,6 +528,7 @@ class SurveyElement(dict):
                         "relevant",
                         "required",
                         "constraint",
+                        "constraint_type",
                         "calculation",
                         "readonly",
                         "image",
@@ -583,6 +585,10 @@ class SurveyElement(dict):
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("bind", {}).get("constraint", ""), lang
                         )
+                    elif val == "constraint_type":
+                        attr_value = self.get("bind", {}).get("oc:constraint-type", "")
+                        if attr_value != "":
+                            attr_label = constants.ANNOTATE_CONSTRAINT_TYPE
                     elif val == "calculation":
                         attr_value = self.get("bind", {}).get("calculate", "")
                     elif val == "readonly":
