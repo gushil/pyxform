@@ -646,6 +646,40 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["all"],
         )
 
+    def test_annotated_label__constraint_type(self):
+        """Test annotated label for item with constraint type check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |                   |                          |  
+            |        | type      | name       | label                                 | calculation | constraint        | bind::oc:constraint-type |
+            |        | string    | field_name | Event_1                               |             |                   |                          |
+            |        | calculate | check1     |                                       | 1+1         |                   |                          |
+            |        | calculate | check2     |                                       | 2+1         |                   |                          |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 4 | strict                   |
+            """,
+            xml__contains=["[Constraint Type: strict]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__constraint_type_style(self):
+        """Test annotated label style for item with constraint type check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |                   |                          |  
+            |        | type      | name       | label                                 | calculation | constraint        | bind::oc:constraint-type |
+            |        | string    | field_name | Event_1                               |             |                   |                          |
+            |        | calculate | check1     |                                       | 1+1         |                   |                          |
+            |        | calculate | check2     |                                       | 2+1         |                   |                          |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 4 | strict                   |
+            """,
+            xml__contains=[
+                '&lt;span style="color: darkolivegreen"&gt; [Constraint Type: strict]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
+
     def test_annotated_label__default(self):
         """Test annotated label for item with default check."""
         self.assertPyxformXform(
