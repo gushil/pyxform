@@ -776,6 +776,24 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["all"],
         )
 
+    def test_annotated_label__calculation_type(self):
+        """Test annotated label for calculation type item"""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                |                |               |          |          |
+            |        | type      | name           | label          | calculation   | required | readonly |
+            |        | calculate | calculate_type |                | 2+3           |          |          |
+            |        | date      | dob            | Date of birth: |               | yes      |          |
+            |        | date      | date_visit     | Date of visit: |               | yes      |          |
+            """,
+            xml__contains=[
+                '<input ref="/data/calculate_type">',
+                'style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 2+3]&lt;/span&gt;</label>',
+            ],
+            annotate=["all"],
+        )
+
     def test_annotated_label__trigger(self):
         """Test annotated label for item with trigger."""
         self.assertPyxformXform(

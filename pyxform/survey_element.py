@@ -679,7 +679,11 @@ class SurveyElement(dict):
         """
         result = []
         label_appended = False
-        if self.label or self.media:
+        if (
+            self.label
+            or self.media
+            or (len(self.get_root().annotated_fields) > 0 and self.type == "calculate")
+        ):
             result.append(self.xml_label())
             label_appended = True
 
