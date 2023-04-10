@@ -905,3 +905,39 @@ class AnnotateLabelTest(PyxformTestCase):
             ],
             annotate=["all"],
         )
+
+    def test_annotate_label__for_choice_filter(self):
+        """Test annotated label for item with choice filter."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                     |         |        |                |
+            |          | type                | name    | label  | choice_filter  |
+            |          | integer             | int_num | Number |                |
+            |          | select_one choices1 | a       | A      | ${int_num} > 1 |
+            | choices  |                     |         |        |                |
+            |          | list_name           | name    | label  |                |
+            |          | choices1            | 1       | One    |                |
+            |          | choices1            | 2       | Two    |                |
+            """,
+            xml__contains=["[Choice Filter: $[int\_num] gt 1]"],
+            annotate=["all"],
+        )
+
+    def test_annotate_label__for_choice_filter_style(self):
+        """Test annotated label style for item with choice filter."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                     |         |        |                |
+            |          | type                | name    | label  | choice_filter  |
+            |          | integer             | int_num | Number |                |
+            |          | select_one choices1 | a       | A      | ${int_num} > 1 |
+            | choices  |                     |         |        |                |
+            |          | list_name           | name    | label  |                |
+            |          | choices1            | 1       | One    |                |
+            |          | choices1            | 2       | Two    |                |
+            """,
+            xml__contains=[
+                '&lt;span style="color: dodgerblue"&gt; [Choice Filter: $[int\_num] gt 1]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )

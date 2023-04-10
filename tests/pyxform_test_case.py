@@ -108,6 +108,7 @@ class PyxformMarkdown:
             "required",
             "constraint",
             "default",
+            "choice_filter",
             "calculation",
             "trigger",
             "readonly",

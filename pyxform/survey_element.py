@@ -438,6 +438,7 @@ class SurveyElement(dict):
                 "required",
                 "constraint",
                 "default",
+                "choice_filter",
                 "calculation",
                 "trigger",
                 "repeat_count",
@@ -498,6 +499,7 @@ class SurveyElement(dict):
                 "required": "color: red",
                 "constraint": "color: magenta",
                 "default": "color: deepskyblue",
+                "choice_filter": "color: dodgerblue",
                 "calculation": "color: maroon",
                 "trigger": "color: darkgreen",
                 "readonly": "color: chocolate",
@@ -613,6 +615,9 @@ class SurveyElement(dict):
                         attr_value = self.get("bind", {}).get("oc:external", "")
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_EXTERNAL
+                    elif val == "choice_filter":
+                        if attr_value != "":
+                            attr_label = constants.ANNOTATE_CHOICE_FILTER
 
                     # Annotated value style
                     if val in annotated_value_styles.keys():
