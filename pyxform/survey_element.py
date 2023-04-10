@@ -418,7 +418,7 @@ class SurveyElement(dict):
             return value
 
         attr_value = value
-        if field_name in ["readonly", "external"]:
+        if field_name in ["readonly", "external", "identifier"]:
             return attr_value
 
         if field_name != "choices":
@@ -504,6 +504,7 @@ class SurveyElement(dict):
                 "image": "color: darkviolet",
                 "repeat_count": "color: lime",
                 "external": "color: indigo",
+                "identifier": "color: tomato",
             }
 
             # Item label
@@ -532,6 +533,7 @@ class SurveyElement(dict):
                         "image",
                         "repeat_count",
                         "external",
+                        "identifier",
                     ]:
                         continue
 
@@ -613,6 +615,8 @@ class SurveyElement(dict):
                         attr_value = self.get("bind", {}).get("oc:external", "")
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_EXTERNAL
+                    elif val == "identifier":
+                        attr_value = self.get("instance", {}).get("oc:identifier", "")
 
                     # Annotated value style
                     if val in annotated_value_styles.keys():

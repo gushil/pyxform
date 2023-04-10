@@ -905,3 +905,31 @@ class AnnotateLabelTest(PyxformTestCase):
             ],
             annotate=["all"],
         )
+
+    def test_annotated_label_identifier(self):
+        """Test annotated label for item with identifier field."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |            |       |                         |
+            |        | type   | name       | label | instance::oc:identifier |
+            |        | string | field_name | Name  | fieldId                 |
+            """,
+            xml__contains=["[Identifier: fieldId]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label_identifier_style(self):
+        """Test annotated label style for item with identifier field."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |            |       |                         |
+            |        | type   | name       | label | instance::oc:identifier |
+            |        | string | field_name | Name  | fieldId                 |
+            """,
+            xml__contains=[
+                '&lt;span style="color: tomato"&gt; [Identifier: fieldId]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
