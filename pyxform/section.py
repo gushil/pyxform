@@ -108,10 +108,21 @@ class Section(SurveyElement):
         Ideally, we'll have groups up and rolling soon, but for now
         let's just yield controls from all the children of this section
         """
-        for e in self.children:
-            control = e.xml_control()
-            if control is not None:
-                yield control
+        if len(self.get_root().annotated_fields) > 0:
+            calculate_children = filter(lambda c: c.type == "calculate", self.children)
+            non_calculate_children = filter(
+                lambda c: c.type != "calculate", self.children
+            )
+            for list in [non_calculate_children, calculate_children]:
+                for e in list:
+                    control = e.xml_control()
+                    if control is not None:
+                        yield control
+        else:
+            for e in self.children:
+                control = e.xml_control()
+                if control is not None:
+                    yield control
 
 
 class RepeatingSection(Section):

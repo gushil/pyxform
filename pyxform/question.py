@@ -42,8 +42,13 @@ class Question(SurveyElement):
         return node(self.name, **attributes)
 
     def xml_control(self):
-        if self.type == "calculate" or (
-            ("calculate" in self.bind or self.trigger) and not (self.label or self.hint)
+        is_annotated_fields = len(self.get_root().annotated_fields) > 0
+        if (self.type == "calculate" and not is_annotated_fields) or (
+            (
+                ("calculate" in self.bind or self.trigger)
+                and not (self.label or self.hint)
+                and not is_annotated_fields
+            )
         ):
             nested_setvalues = self.get_root().get_setvalues_for_question_name(self.name)
             if nested_setvalues:
@@ -83,7 +88,21 @@ class Question(SurveyElement):
                 xml_node.appendChild(setvalue_node)
 
     def build_xml(self):
-        return None
+        is_annotated_fields = len(self.get_root().annotated_fields) > 0
+        if is_annotated_fields:
+            if self.type == "calculate":
+                control_dict = {"tag": "input"}
+                control_dict["ref"] = self.get_xpath()
+                result = node(**control_dict)
+                # Resolve field references in attributes
+                label_and_hint = self.xml_label_and_hint()
+                if label_and_hint:
+                    for element in self.xml_label_and_hint():
+                        result.appendChild(element)
+
+                return result
+        else:
+            return None
 
 
 class InputQuestion(Question):

@@ -646,6 +646,40 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["all"],
         )
 
+    def test_annotated_label__constraint_type(self):
+        """Test annotated label for item with constraint type check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |                   |                          |  
+            |        | type      | name       | label                                 | calculation | constraint        | bind::oc:constraint-type |
+            |        | string    | field_name | Event_1                               |             |                   |                          |
+            |        | calculate | check1     |                                       | 1+1         |                   |                          |
+            |        | calculate | check2     |                                       | 2+1         |                   |                          |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 4 | strict                   |
+            """,
+            xml__contains=["[Constraint Type: strict]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__constraint_type_style(self):
+        """Test annotated label style for item with constraint type check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |                   |                          |  
+            |        | type      | name       | label                                 | calculation | constraint        | bind::oc:constraint-type |
+            |        | string    | field_name | Event_1                               |             |                   |                          |
+            |        | calculate | check1     |                                       | 1+1         |                   |                          |
+            |        | calculate | check2     |                                       | 2+1         |                   |                          |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 4 | strict                   |
+            """,
+            xml__contains=[
+                '&lt;span style="color: darkolivegreen"&gt; [Constraint Type: strict]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
+
     def test_annotated_label__default(self):
         """Test annotated label for item with default check."""
         self.assertPyxformXform(
@@ -773,6 +807,24 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | integer | age_visit  | Age at date of visit: | round((decimal-date-time(${date_visit}) - decimal-date-time(${dob})) div 365.25 - .5, 0) |          | yes      |
             """,
             xml__contains=['<bind calculate="string(\'\')" nodeset="/data/age_visit"'],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__calculation_type(self):
+        """Test annotated label for calculation type item"""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                |                |               |          |          |
+            |        | type      | name           | label          | calculation   | required | readonly |
+            |        | calculate | calculate_type |                | 2+3           |          |          |
+            |        | date      | dob            | Date of birth: |               | yes      |          |
+            |        | date      | date_visit     | Date of visit: |               | yes      |          |
+            """,
+            xml__contains=[
+                '<input ref="/data/calculate_type">',
+                'style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 2+3]&lt;/span&gt;</label>',
+            ],
             annotate=["all"],
         )
 

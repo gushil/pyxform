@@ -418,7 +418,7 @@ class SurveyElement(dict):
             return value
 
         attr_value = value
-        if field_name in ["readonly", "external"]:
+        if field_name in ["readonly", "external", "constraint_type"]:
             return attr_value
 
         if field_name != "choices":
@@ -498,6 +498,7 @@ class SurveyElement(dict):
                 "relevant": "color: green",
                 "required": "color: red",
                 "constraint": "color: magenta",
+                "constraint_type": "color: darkolivegreen",
                 "default": "color: deepskyblue",
                 "choice_filter": "color: dodgerblue",
                 "calculation": "color: maroon",
@@ -529,6 +530,7 @@ class SurveyElement(dict):
                         "relevant",
                         "required",
                         "constraint",
+                        "constraint_type",
                         "calculation",
                         "readonly",
                         "image",
@@ -585,6 +587,10 @@ class SurveyElement(dict):
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("bind", {}).get("constraint", ""), lang
                         )
+                    elif val == "constraint_type":
+                        attr_value = self.get("bind", {}).get("oc:constraint-type", "")
+                        if attr_value != "":
+                            attr_label = constants.ANNOTATE_CONSTRAINT_TYPE
                     elif val == "calculation":
                         attr_value = self.get("bind", {}).get("calculate", "")
                     elif val == "readonly":
@@ -684,7 +690,11 @@ class SurveyElement(dict):
         """
         result = []
         label_appended = False
-        if self.label or self.media:
+        if (
+            self.label
+            or self.media
+            or (len(self.get_root().annotated_fields) > 0 and self.type == "calculate")
+        ):
             result.append(self.xml_label())
             label_appended = True
 

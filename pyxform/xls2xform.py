@@ -117,6 +117,7 @@ def _create_parser():
             "relevant",
             "required",
             "constraint",
+            "constraint_type",
             "default",
             "choice_filter",
             "calculation",
