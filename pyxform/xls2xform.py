@@ -120,6 +120,7 @@ def _create_parser():
             "constraint",
             "constraint_type",
             "default",
+            "choice_filter",
             "calculation",
             "trigger",
             "readonly",
