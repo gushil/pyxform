@@ -991,3 +991,31 @@ class AnnotateLabelTest(PyxformTestCase):
             ],
             annotate=["all"],
         )
+
+    def test_annotated_label_contactdata(self):
+        """Test annotated label for item with contactdata field."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |            |       |                   |                          |
+            |        | type   | name       | label | bind::oc:external | instance::oc:contactdata |
+            |        | string | field_name | Name  | contactdata       | contact_name             |
+            """,
+            xml__contains=["[Contact Data: contact_name]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label_contactdata_style(self):
+        """Test annotated label style for item with contactdata field."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |        |            |       |                   |                          |
+            |        | type   | name       | label | bind::oc:external | instance::oc:contactdata |
+            |        | string | field_name | Name  | contactdata       | contact_name             |
+            """,
+            xml__contains=[
+                '&lt;span style="color: tomato"&gt; [Contact Data: contact_name]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
