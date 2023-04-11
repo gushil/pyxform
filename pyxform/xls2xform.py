@@ -125,6 +125,7 @@ def _create_parser():
             "image",
             "repeat_count",
             "external",
+            "contactdata",
             "identifier",
             "all",
         ],

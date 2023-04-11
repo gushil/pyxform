@@ -115,6 +115,7 @@ class PyxformMarkdown:
             "image",
             "repeat_count",
             "external",
+            "contactdata",
             "identifier",
         ]
         # Set annotated_fields from annotate parameter
