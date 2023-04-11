@@ -106,6 +106,7 @@ class PyxformMarkdown:
             "itemgroup",
             "relevant",
             "required",
+            "required_type",
             "constraint",
             "constraint_type",
             "default",
