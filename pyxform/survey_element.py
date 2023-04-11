@@ -503,6 +503,7 @@ class SurveyElement(dict):
                 "trigger": "color: darkgreen",
                 "readonly": "color: chocolate",
                 "image": "color: darkviolet",
+                "audio": "color: darkviolet",
                 "repeat_count": "color: lime",
                 "external": "color: indigo",
                 "contactdata": "color: tomato",
@@ -533,6 +534,7 @@ class SurveyElement(dict):
                         "calculation",
                         "readonly",
                         "image",
+                        "audio",
                         "repeat_count",
                         "external",
                         "contactdata",
@@ -602,6 +604,10 @@ class SurveyElement(dict):
                     elif val == "image":
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("media", {}).get("image", ""), lang
+                        )
+                    elif val == "audio":
+                        attr_value = self.get_field_or_lang_dict_value(
+                            self.get("media", {}).get("audio", ""), lang
                         )
                     elif val == "repeat_count" and self.type == "repeat":
                         repeat_count_model = next(

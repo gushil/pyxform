@@ -985,3 +985,31 @@ class AnnotateLabelTest(PyxformTestCase):
             ],
             annotate=["all"],
         )
+
+    def test_annotated_label__audio_field(self):
+        """Test annotated label for item with audio field."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                 |             |                |
+            |        | type      | name            | label       | audio          |
+            |        | text      | text_with_audio | Audio Text: | audio_file.mp3 |
+            """,
+            xml__contains=["[Audio: audio\_file.mp3]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__audio_field_style(self):
+        """Test annotated label style for item with audio field."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                 |             |                |
+            |        | type      | name            | label       | audio          |
+            |        | text      | text_with_audio | Audio Text: | audio_file.mp3 |
+            """,
+            xml__contains=[
+                '&lt;span style="color: darkviolet"&gt; [Audio: audio\_file.mp3]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )

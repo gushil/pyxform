@@ -113,6 +113,7 @@ class PyxformMarkdown:
             "trigger",
             "readonly",
             "image",
+            "audio",
             "repeat_count",
             "external",
             "contactdata",
