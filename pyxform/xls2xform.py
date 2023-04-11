@@ -123,6 +123,7 @@ def _create_parser():
             "trigger",
             "readonly",
             "image",
+            "video",
             "repeat_count",
             "external",
             "contactdata",
