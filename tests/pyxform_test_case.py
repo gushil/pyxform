@@ -116,6 +116,7 @@ class PyxformMarkdown:
             "readonly",
             "image",
             "video",
+            "audio",
             "repeat_count",
             "external",
             "contactdata",

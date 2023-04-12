@@ -126,6 +126,7 @@ def _create_parser():
             "readonly",
             "image",
             "video",
+            "audio",
             "repeat_count",
             "external",
             "contactdata",
