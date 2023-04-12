@@ -418,7 +418,7 @@ class SurveyElement(dict):
             return value
 
         attr_value = value
-        if field_name in ["readonly", "external", "contactdata", "constraint_type", "required_type"]:
+        if field_name in ["readonly", "external", "contactdata", "constraint_type", "required_type", "identifier"]:
             return attr_value
 
         if field_name != "choices":
@@ -506,10 +506,12 @@ class SurveyElement(dict):
                 "trigger": "color: darkgreen",
                 "readonly": "color: chocolate",
                 "image": "color: darkviolet",
+                "video": "color: darkviolet",
                 "audio": "color: darkviolet",
                 "repeat_count": "color: lime",
                 "external": "color: indigo",
                 "contactdata": "color: tomato",
+                "identifier": "color: tomato",
             }
 
             # Item label
@@ -538,10 +540,12 @@ class SurveyElement(dict):
                         "calculation",
                         "readonly",
                         "image",
+                        "video",
                         "audio",
                         "repeat_count",
                         "external",
                         "contactdata",
+                        "identifier",
                     ]:
                         continue
 
@@ -615,6 +619,10 @@ class SurveyElement(dict):
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("media", {}).get("image", ""), lang
                         )
+                    elif val == "video":
+                        attr_value = self.get_field_or_lang_dict_value(
+                            self.get("media", {}).get("video", ""), lang
+                        )
                     elif val == "audio":
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("media", {}).get("audio", ""), lang
@@ -644,6 +652,8 @@ class SurveyElement(dict):
                     elif val == "choice_filter":
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_CHOICE_FILTER
+                    elif val == "identifier":
+                        attr_value = self.get("instance", {}).get("oc:identifier", "")
 
                     # Annotated value style
                     if val in annotated_value_styles.keys():
