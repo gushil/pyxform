@@ -129,6 +129,7 @@ def _create_parser():
             "repeat_count",
             "external",
             "contactdata",
+            "identifier",
             "all",
         ],
         help="Print XML forms with annotated label(s). This argument can be used multiple times.",
