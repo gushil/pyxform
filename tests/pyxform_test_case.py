@@ -118,6 +118,7 @@ class PyxformMarkdown:
             "repeat_count",
             "external",
             "contactdata",
+            "identifier",
         ]
         # Set annotated_fields from annotate parameter
         annotate = kwargs.get("annotate", [])
