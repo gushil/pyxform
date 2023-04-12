@@ -418,7 +418,7 @@ class SurveyElement(dict):
             return value
 
         attr_value = value
-        if field_name in ["readonly", "external", "contactdata", "constraint_type", "identifier"]:
+        if field_name in ["readonly", "external", "contactdata", "constraint_type", "required_type", "identifier"]:
             return attr_value
 
         if field_name != "choices":
@@ -438,6 +438,7 @@ class SurveyElement(dict):
                 "required",
                 "constraint",
                 "default",
+                "choice_filter",
                 "calculation",
                 "trigger",
                 "repeat_count",
@@ -496,9 +497,11 @@ class SurveyElement(dict):
                 "itemgroup": "color: blue",
                 "relevant": "color: green",
                 "required": "color: red",
+                "required_type": "color: cornflowerblue",
                 "constraint": "color: magenta",
                 "constraint_type": "color: darkolivegreen",
                 "default": "color: deepskyblue",
+                "choice_filter": "color: dodgerblue",
                 "calculation": "color: maroon",
                 "trigger": "color: darkgreen",
                 "readonly": "color: chocolate",
@@ -529,6 +532,7 @@ class SurveyElement(dict):
                         "itemgroup",
                         "relevant",
                         "required",
+                        "required_type",
                         "constraint",
                         "constraint_type",
                         "calculation",
@@ -585,6 +589,12 @@ class SurveyElement(dict):
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("bind", {}).get("required", ""), lang
                         )
+                    elif val == "required_type":
+                        attr_value = self.get_field_or_lang_dict_value(
+                            self.get("bind", {}).get("oc:required-type", ""), lang
+                        )
+                        if attr_value != "":
+                            attr_label = constants.ANNOTATE_REQUIRED_TYPE
                     elif val == "constraint":
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("bind", {}).get("constraint", ""), lang
@@ -627,6 +637,9 @@ class SurveyElement(dict):
                         attr_value = self.get("instance", {}).get("oc:contactdata", "")
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_CONTACTDATA
+                    elif val == "choice_filter":
+                        if attr_value != "":
+                            attr_label = constants.ANNOTATE_CHOICE_FILTER
                     elif val == "identifier":
                         attr_value = self.get("instance", {}).get("oc:identifier", "")
 
