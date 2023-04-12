@@ -612,6 +612,40 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["all"],
         )
 
+    def test_annotated_label__required_type(self):
+        """Test annotated label for item with required-type check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |                   |                        |
+            |        | type      | name       | label                                 | calculation | required          | bind::oc:required-type |
+            |        | string    | field_name | Event_1                               |             |                   |                        |
+            |        | calculate | check1     |                                       | 1+1         |                   |                        |
+            |        | calculate | check2     |                                       | 2+1         |                   |                        |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 3 | strict                 |
+            """,
+            xml__contains=["[Required-type: strict]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__required_type_style(self):
+        """Test annotated label style for item with required-type check."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |            |                                       |             |                   |                        |
+            |        | type      | name       | label                                 | calculation | required          | bind::oc:required-type |
+            |        | string    | field_name | Event_1                               |             |                   |                        |
+            |        | calculate | check1     |                                       | 1+1         |                   |                        |
+            |        | calculate | check2     |                                       | 2+1         |                   |                        |
+            |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 3 | strict                 |
+            """,
+            xml__contains=[
+                '&lt;span style="color: cornflowerblue"&gt; [Required-type: strict]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
+
     def test_annotated_label__constraint(self):
         """Test annotated label for item with constraint check."""
         self.assertPyxformXform(
@@ -982,6 +1016,42 @@ class AnnotateLabelTest(PyxformTestCase):
             """,
             xml__contains=[
                 '&lt;span style="color: tomato"&gt; [Contact Data: contact_name]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
+
+    def test_annotate_label__for_choice_filter(self):
+        """Test annotated label for item with choice filter."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                     |         |        |                |
+            |          | type                | name    | label  | choice_filter  |
+            |          | integer             | int_num | Number |                |
+            |          | select_one choices1 | a       | A      | ${int_num} > 1 |
+            | choices  |                     |         |        |                |
+            |          | list_name           | name    | label  |                |
+            |          | choices1            | 1       | One    |                |
+            |          | choices1            | 2       | Two    |                |
+            """,
+            xml__contains=["[Choice Filter: $[int\_num] gt 1]"],
+            annotate=["all"],
+        )
+
+    def test_annotate_label__for_choice_filter_style(self):
+        """Test annotated label style for item with choice filter."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                     |         |        |                |
+            |          | type                | name    | label  | choice_filter  |
+            |          | integer             | int_num | Number |                |
+            |          | select_one choices1 | a       | A      | ${int_num} > 1 |
+            | choices  |                     |         |        |                |
+            |          | list_name           | name    | label  |                |
+            |          | choices1            | 1       | One    |                |
+            |          | choices1            | 2       | Two    |                |
+            """,
+            xml__contains=[
+                '&lt;span style="color: dodgerblue"&gt; [Choice Filter: $[int\_num] gt 1]&lt;/span&gt;'
             ],
             annotate=["all"],
         )
