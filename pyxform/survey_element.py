@@ -418,7 +418,14 @@ class SurveyElement(dict):
             return value
 
         attr_value = value
-        if field_name in ["readonly", "external", "contactdata", "constraint_type", "required_type", "identifier"]:
+        if field_name in [
+            "readonly",
+            "external",
+            "contactdata",
+            "constraint_type",
+            "required_type",
+            "identifier",
+        ]:
             return attr_value
 
         if field_name != "choices":
@@ -661,6 +668,7 @@ class SurveyElement(dict):
 
                     # Annotated value assignment
                     if attr_label != "" and attr_value != "":
+                        attr_value = "".join(attr_value.splitlines())
                         attr_value = self.annotated_value_processing(attr_value, val)
                         annotated_value = "{}: {}".format(attr_label, attr_value)
                         attributes = {}
