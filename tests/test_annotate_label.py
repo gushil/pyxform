@@ -624,7 +624,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | calculate | check2     |                                       | 2+1         |                   |                        |
             |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 3 | strict                 |
             """,
-            xml__contains=["[Required-type: strict]"],
+            xml__contains=["[Required Type: strict]"],
             annotate=["all"],
         )
 
@@ -641,7 +641,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 3 | strict                 |
             """,
             xml__contains=[
-                '&lt;span style="color: cornflowerblue"&gt; [Required-type: strict]&lt;/span&gt;'
+                '&lt;span style="color: cornflowerblue"&gt; [Required Type: strict]&lt;/span&gt;'
             ],
             annotate=["all"],
         )
