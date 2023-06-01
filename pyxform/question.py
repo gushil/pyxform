@@ -43,7 +43,7 @@ class Question(SurveyElement):
 
     def xml_control(self):
         is_annotated_fields = len(self.get_root().annotated_fields) > 0
-        if (self.type == "calculate" and not is_annotated_fields) or (
+        if (self.type == "calculate" and not (is_annotated_fields)) or (
             (
                 ("calculate" in self.bind or self.trigger)
                 and not (self.label or self.hint)
@@ -88,8 +88,7 @@ class Question(SurveyElement):
                 xml_node.appendChild(setvalue_node)
 
     def build_xml(self):
-        is_annotated_fields = len(self.get_root().annotated_fields) > 0
-        if is_annotated_fields:
+        if len(self.get_root().annotated_fields) > 0:
             if self.type == "calculate":
                 control_dict = {"tag": "input"}
                 control_dict["ref"] = self.get_xpath()
