@@ -10,7 +10,12 @@ import os
 from os.path import splitext
 
 from pyxform import builder, xls2json
-from pyxform.utils import has_external_choices, sheet_to_csv
+from pyxform.utils import (
+    has_external_choices,
+    sheet_to_csv,
+    extract_calculate_elements,
+    get_meta_node_index,
+)
 from pyxform.validators.odk_validate import ODKValidateError
 
 logger = logging.getLogger(__name__)
@@ -39,6 +44,12 @@ def xls2xform_convert(
     warnings = []
 
     json_survey = xls2json.parse_file_to_json(xlsform_path, warnings=warnings)
+    if len(annotate_fields) > 0:
+        calculate_nodes = extract_calculate_elements(json_survey)
+        meta_node_index = get_meta_node_index(json_survey)
+        for idx, calculate_node in enumerate(calculate_nodes):
+            json_survey["children"].insert(meta_node_index + idx, calculate_node)
+
     survey = builder.create_survey_element_from_dict(json_survey)
     # Setting validate to false will cause the form not to be processed by
     # ODK Validate.
