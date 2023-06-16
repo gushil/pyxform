@@ -18,7 +18,7 @@ from lxml.etree import _Element
 
 from pyxform.builder import create_survey_element_from_dict
 from pyxform.errors import PyXFormError
-from pyxform.utils import NSMAP
+from pyxform.utils import NSMAP, extract_calculate_elements, get_meta_node_index
 from pyxform.validators.odk_validate import ODKValidateError, check_xform
 from pyxform.xls2json import workbook_to_json
 from tests.test_utils.md_table import md_table_to_ss_structure
@@ -93,13 +93,8 @@ class PyxformMarkdown:
     def _ss_structure_to_pyxform_survey(ss_structure, kwargs, warnings=None):
         # using existing methods from the builder
         imported_survey_json = workbook_to_json(ss_structure, warnings=warnings)
-        # ideally, when all these tests are working, this would be
-        # refactored as well
-        survey = create_survey_element_from_dict(imported_survey_json)
-        survey.name = kwargs.get("name", "data")
-        survey.title = kwargs.get("title")
-        survey.id_string = kwargs.get("id_string")
 
+        # annotated_fields input handling
         default_annotate_fields_order = [
             "name",
             "type",
@@ -134,6 +129,21 @@ class PyxformMarkdown:
                 annotate = [
                     field for field in default_annotate_fields_order if field in annotate
                 ]
+
+        if len(annotate) > 0:
+            calculate_nodes = extract_calculate_elements(imported_survey_json)
+            meta_node_index = get_meta_node_index(imported_survey_json)
+            for idx, calculate_node in enumerate(calculate_nodes):
+                imported_survey_json["children"].insert(
+                    meta_node_index + idx, calculate_node
+                )
+
+        # ideally, when all these tests are working, this would be
+        # refactored as well
+        survey = create_survey_element_from_dict(imported_survey_json)
+        survey.name = kwargs.get("name", "data")
+        survey.title = kwargs.get("title")
+        survey.id_string = kwargs.get("id_string")
         survey.annotated_fields = annotate
 
         return survey

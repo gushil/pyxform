@@ -434,3 +434,38 @@ def parse_expression(text: str) -> Tuple[List[ExpLexerToken], str]:
 
 def coalesce(*args):
     return next((a for a in args if a is not None), None)
+
+
+def extract_calculate_elements(json_node):
+    calculate_elements = []
+
+    if isinstance(json_node, dict):
+        if "children" in json_node and isinstance(json_node["children"], list):
+            calculate_elements.extend(extract_calculate_elements(json_node["children"]))
+    elif isinstance(json_node, list):
+        for element in json_node:
+            if element.get("type") == "calculate" and element.get("bind", {}).get(
+                "calculate"
+            ):
+                element.get("bind", {}).pop("oc:itemgroup", None)
+                calculate_elements.append(element)
+                json_node.remove(element)
+            if (
+                isinstance(element, dict)
+                and element.get("children")
+                and isinstance(element["children"], list)
+            ):
+                calculate_elements.extend(extract_calculate_elements(element["children"]))
+
+    return calculate_elements
+
+
+def get_meta_node_index(json_survey):
+    return next(
+        (
+            i
+            for i, json_survey_child in enumerate(json_survey["children"])
+            if json_survey_child["name"] == "meta"
+        ),
+        0,
+    )
