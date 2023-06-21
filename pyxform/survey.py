@@ -520,6 +520,13 @@ class Survey(Section):
 
         # Append last so the choice instance is excluded on a name clash.
         for name, value in self.choices.items():
+            if len(self.annotated_fields) > 0:
+                for choice in value:
+                    for choice_item_name, choice_item_value in choice.items():
+                        if choice_item_name == "label" and "name" in choice:
+                            choice[choice_item_name] = "{} [{}]".format(
+                                choice_item_value, choice.get("name")
+                            )
             instances += [
                 self._generate_static_instances(list_name=name, choice_list=value)
             ]
@@ -693,6 +700,11 @@ class Survey(Section):
                 for name, choice_value in choice.items():
                     itext_id = "-".join([list_name, str(idx)])
                     if isinstance(choice_value, dict):
+                        if len(self.annotated_fields) > 0 and "name" in choice:
+                            choice_value = {
+                                lang: "{} [{}]".format(value, choice.get("name"))
+                                for lang, value in choice_value.items()
+                            }
                         _setup_choice_translations(name, choice_value, itext_id)
                     elif name == "label":
                         self._add_to_nested_dict(
