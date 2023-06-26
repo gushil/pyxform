@@ -882,6 +882,27 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["all"],
         )
 
+    def test_annotated_label__calculation_type__itemgroup(self):
+        """Test annotated label for calculation type item with itemgroup information"""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                  |                |                    |             |
+            |        | type      | name             | label          | bind::oc:itemgroup | calculation |
+            |        | calculate | calculate_type_1 |                | IG_1               | 1+1         |
+            |        | date      | dob              | Date of birth: | IG_1               | yes         |
+            |        | calculate | calculate_type_2 |                | IG_2               | 2+3         |
+            |        | date      | date_visit       | Date of visit: | IG_2               | yes         |
+            """,
+            xml__contains=[
+                '<input ref="/data/calculate_type_1">',
+                '&lt;span style="color: orangered"&gt; [Name: calculate\_type\_1]&lt;/span&gt;&lt;span style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: blue"&gt; [Item Group: IG\_1]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 1+1]&lt;/span&gt;</label>',
+                '<input ref="/data/calculate_type_2">',
+                '&lt;span style="color: orangered"&gt; [Name: calculate\_type\_2]&lt;/span&gt;&lt;span style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: blue"&gt; [Item Group: IG\_2]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 2+3]&lt;/span&gt;</label>',
+            ],
+            annotate=["all"],
+        )
+
     def test_annotated_label__trigger(self):
         """Test annotated label for item with trigger."""
         self.assertPyxformXform(
