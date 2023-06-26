@@ -447,7 +447,6 @@ def extract_calculate_elements(json_node):
             if element.get("type") == "calculate" and element.get("bind", {}).get(
                 "calculate"
             ):
-                element.get("bind", {}).pop("oc:itemgroup", None)
                 calculate_elements.append(element)
                 json_node.remove(element)
             if (
