@@ -103,6 +103,7 @@ class XPathHelper:
         prefix = {
             "audio": ("label", "jr://audio/"),
             "image": ("label", "jr://images/"),
+            "big-image": ("label", "jr://images/"),
             "video": ("label", "jr://video/"),
             "guidance": ("hint", ""),
         }
@@ -137,6 +138,7 @@ class XPathHelper:
         prefix = {
             "audio": ("label", "jr://audio/"),
             "image": ("label", "jr://images/"),
+            "big-image": ("label", "jr://images/"),
             "video": ("label", "jr://video/"),
             "guidance": ("hint", ""),
         }
@@ -173,6 +175,7 @@ class XPathHelper:
         prefix = {
             "audio": "jr://audio/",
             "image": "jr://images/",
+            "big-image": "jr://images/",
             "video": "jr://video/",
         }
         return f"""
@@ -196,6 +199,7 @@ class XPathHelper:
         prefix = {
             "audio": "jr://audio/",
             "image": "jr://images/",
+            "big-image": "jr://images/",
             "video": "jr://video/",
         }
         return f"""
@@ -236,6 +240,7 @@ class XPathHelper:
         prefix = {
             "audio": "jr://audio/",
             "image": "jr://images/",
+            "big-image": "jr://images/",
             "video": "jr://video/",
         }
         return f"""
@@ -609,6 +614,24 @@ class TestTranslationsSurvey(PyxformTestCase):
             warnings_count=0,
         )
 
+    def test_no_default__no_translation__image_with_big_image(self):
+        """Should find default language translations for image and big-image."""
+        md = """
+        | survey |      |      |              |                  |
+        |        | type | name | media::image | media::big-image |
+        |        | note | n1   | greeting.jpg | greeting.jpg     |
+        """
+        self.assertPyxformXform(
+            name="test",
+            md=md,
+            xml__xpath_match=[
+                self.xp.question_itext_form(DEFAULT_LANG, "image", "greeting.jpg"),
+                self.xp.question_itext_form(DEFAULT_LANG, "big-image", "greeting.jpg"),
+                self.xp.language_is_default(DEFAULT_LANG),
+            ],
+            warnings_count=0,
+        )
+
     def test_no_default__one_translation__label_and_hint(self):
         """Should find language translations for label and hint."""
         md = """
@@ -837,9 +860,9 @@ class TestTranslationsSurvey(PyxformTestCase):
     def test_no_default__one_translation__label_and_hint_all_cols(self):
         """Should find language translation for label, hint, and all translatables."""
         md = """
-        | survey |      |      |            |            |                    |                   |                   |                   |                         |                       |
-        |        | type | name | label::eng | hint::eng  | guidance_hint::eng | media::image::eng | media::video::eng | media::audio::eng | constraint_message::eng | required_message::eng |
-        |        | note | n1   | hello      | salutation | greeting           | greeting.jpg      | greeting.mkv      | greeting.mp3      | check me                | mandatory             |
+        | survey |      |      |            |            |                    |                   |                       |                   |                   |                         |                       |
+        |        | type | name | label::eng | hint::eng  | guidance_hint::eng | media::image::eng | media::big-image::eng | media::video::eng | media::audio::eng | constraint_message::eng | required_message::eng |
+        |        | note | n1   | hello      | salutation | greeting           | greeting.jpg      | greeting.jpg          | greeting.mkv      | greeting.mp3      | check me                | mandatory             |
         """
         self.assertPyxformXform(
             name="test",
@@ -851,6 +874,7 @@ class TestTranslationsSurvey(PyxformTestCase):
                 self.xp.question_itext_hint("eng", "salutation"),
                 self.xp.question_itext_form("eng", "guidance", "greeting"),
                 self.xp.question_itext_form("eng", "image", "greeting.jpg"),
+                self.xp.question_itext_form("eng", "big-image", "greeting.jpg"),
                 self.xp.question_itext_form("eng", "video", "greeting.mkv"),
                 self.xp.question_itext_form("eng", "audio", "greeting.mp3"),
                 self.xp.constraint_msg_references_itext(),
@@ -914,9 +938,9 @@ class TestTranslationsSurvey(PyxformTestCase):
     def test_missing_translation__one_lang_all_cols__warn__no_default(self):
         """Should warn if there's multiple missing translations and no default_language."""
         md = """
-        | survey |      |      |       |            |            |                    |                   |                   |                   |                         |                       |
-        |        | type | name | label | label::eng | hint::eng  | guidance_hint::eng | media::image::eng | media::video::eng | media::audio::eng | constraint_message::eng | required_message::eng |
-        |        | note | n1   | hello | hi there   | salutation | greeting           | greeting.jpg      | greeting.mkv      | greeting.mp3      | check me                | mandatory             |
+        | survey |      |      |       |            |            |                    |                   |                       |                   |                   |                         |                       |
+        |        | type | name | label | label::eng | hint::eng  | guidance_hint::eng | media::image::eng | media::big-image::eng | media::video::eng | media::audio::eng | constraint_message::eng | required_message::eng |
+        |        | note | n1   | hello | hi there   | salutation | greeting           | greeting.jpg      | greeting.jpg          | greeting.mkv      | greeting.mp3      | check me                | mandatory             |
         """
         cols = {
             SURVEY: {
@@ -924,6 +948,7 @@ class TestTranslationsSurvey(PyxformTestCase):
                     "hint",
                     "guidance_hint",
                     "media::image",
+                    "media::big-image",
                     "media::video",
                     "media::audio",
                     "constraint_message",
@@ -947,6 +972,8 @@ class TestTranslationsSurvey(PyxformTestCase):
                 self.xp.question_itext_form(DEFAULT_LANG, "guidance", "-"),
                 self.xp.question_itext_form("eng", "image", "greeting.jpg"),
                 self.xp.question_no_itext_form(DEFAULT_LANG, "image", "greeting.jpg"),
+                self.xp.question_itext_form("eng", "big-image", "greeting.jpg"),
+                self.xp.question_no_itext_form(DEFAULT_LANG, "big-image", "greeting.jpg"),
                 self.xp.question_itext_form("eng", "video", "greeting.mkv"),
                 self.xp.question_no_itext_form(DEFAULT_LANG, "video", "greeting.mkv"),
                 self.xp.question_itext_form("eng", "audio", "greeting.mp3"),
@@ -968,9 +995,9 @@ class TestTranslationsSurvey(PyxformTestCase):
         | settings |                  |
         |          | default_language |
         |          | eng              |
-        | survey |      |      |       |            |            |                    |                   |                   |                   |                         |                       |
-        |        | type | name | label | label::eng | hint::eng  | guidance_hint::eng | media::image::eng | media::video::eng | media::audio::eng | constraint_message::eng | required_message::eng |
-        |        | note | n1   | hello | hi there   | salutation | greeting           | greeting.jpg      | greeting.mkv      | greeting.mp3      | check me                | mandatory             |
+        | survey |      |      |       |            |            |                    |                   |                       |                   |                   |                         |                       |
+        |        | type | name | label | label::eng | hint::eng  | guidance_hint::eng | media::image::eng | media::big-image::eng | media::video::eng | media::audio::eng | constraint_message::eng | required_message::eng |
+        |        | note | n1   | hello | hi there   | salutation | greeting           | greeting.jpg      | greeting.jpg          | greeting.mkv      | greeting.mp3      | check me                | mandatory             |
         """
         # cols = {
         #     SURVEY: {
@@ -1191,10 +1218,10 @@ class TestTranslationsChoices(PyxformTestCase):
         | survey  |               |       |            |
         |         | type          | name  | label      |
         |         | select_one c1 | q1    | Question 1 |
-        | choices |           |      |       |              |              |              |
-        |         | list name | name | label | media::audio | media::image | media::video |
-        |         | c1        | na   | la    | a.mp3        | a.jpg        | a.mkv        |
-        |         | c1        | nb   | lb    | b.mp3        | b.jpg        | b.mkv        |
+        | choices |           |      |       |              |              |                  |              |
+        |         | list name | name | label | media::audio | media::image | media::big-image | media::video |
+        |         | c1        | na   | la    | a.mp3        | a.jpg        | a.jpg            | a.mkv        |
+        |         | c1        | nb   | lb    | b.mp3        | b.jpg        | b.jpg            | b.mkv        |
         """
         xpath_match = [
             self.xp.question_label_in_body("Question 1"),
@@ -1205,10 +1232,12 @@ class TestTranslationsChoices(PyxformTestCase):
             self.xp.choice_itext_label(DEFAULT_LANG, "na", "la"),
             self.xp.choice_itext_form(DEFAULT_LANG, "na", "audio", "a.mp3"),
             self.xp.choice_itext_form(DEFAULT_LANG, "na", "image", "a.jpg"),
+            self.xp.choice_itext_form(DEFAULT_LANG, "na", "big-image", "a.jpg"),
             self.xp.choice_itext_form(DEFAULT_LANG, "na", "video", "a.mkv"),
             self.xp.choice_itext_label(DEFAULT_LANG, "nb", "lb"),
             self.xp.choice_itext_form(DEFAULT_LANG, "nb", "audio", "b.mp3"),
             self.xp.choice_itext_form(DEFAULT_LANG, "nb", "image", "b.jpg"),
+            self.xp.choice_itext_form(DEFAULT_LANG, "nb", "big-image", "b.jpg"),
             self.xp.choice_itext_form(DEFAULT_LANG, "nb", "video", "b.mkv"),
         ]
         self.assertPyxformXform(
@@ -1223,10 +1252,10 @@ class TestTranslationsChoices(PyxformTestCase):
         | survey  |               |       |            |
         |         | type          | name  | label      |
         |         | select_one c1 | q1    | Question 1 |
-        | choices |           |      |                 |                        |                        |                        |
-        |         | list name | name | label::Eng (en) | media::audio::Eng (en) | media::image::Eng (en) | media::video::Eng (en) |
-        |         | c1        | na   | la              | a.mp3                  | a.jpg                  | a.mkv                  |
-        |         | c1        | nb   | lb              | b.mp3                  | b.jpg                  | b.mkv                  |
+        | choices |           |      |                 |                        |                        |                            |                        |
+        |         | list name | name | label::Eng (en) | media::audio::Eng (en) | media::image::Eng (en) | media::big-image::Eng (en) | media::video::Eng (en) |
+        |         | c1        | na   | la              | a.mp3                  | a.jpg                  | a.jpg                      | a.mkv                  |
+        |         | c1        | nb   | lb              | b.mp3                  | b.jpg                  | b.jpg                      | b.mkv                  |
         """
         xpath_match = [
             self.xp.question_label_in_body("Question 1"),
@@ -1237,10 +1266,12 @@ class TestTranslationsChoices(PyxformTestCase):
             self.xp.choice_itext_label("Eng (en)", "na", "la"),
             self.xp.choice_itext_form("Eng (en)", "na", "audio", "a.mp3"),
             self.xp.choice_itext_form("Eng (en)", "na", "image", "a.jpg"),
+            self.xp.choice_itext_form("Eng (en)", "na", "big-image", "a.jpg"),
             self.xp.choice_itext_form("Eng (en)", "na", "video", "a.mkv"),
             self.xp.choice_itext_label("Eng (en)", "nb", "lb"),
             self.xp.choice_itext_form("Eng (en)", "nb", "audio", "b.mp3"),
             self.xp.choice_itext_form("Eng (en)", "nb", "image", "b.jpg"),
+            self.xp.choice_itext_form("Eng (en)", "nb", "big-image", "b.jpg"),
             self.xp.choice_itext_form("Eng (en)", "nb", "video", "b.mkv"),
         ]
         self.assertPyxformXform(
@@ -1255,10 +1286,10 @@ class TestTranslationsChoices(PyxformTestCase):
         | survey  |               |       |            |               |
         |         | type          | name  | label      | choice_filter |
         |         | select_one c1 | q1    | Question 1 | q1 != ''      |
-        | choices |           |      |       |              |              |              |
-        |         | list name | name | label | media::audio | media::image | media::video |
-        |         | c1        | na   | la    | a.mp3        | a.jpg        | a.mkv        |
-        |         | c1        | nb   | lb    | b.mp3        | b.jpg        | b.mkv        |
+        | choices |           |      |       |              |              |                  |
+        |         | list name | name | label | media::audio | media::image | media::big-image | media::video |
+        |         | c1        | na   | la    | a.mp3        | a.jpg        | a.jpg            | a.mkv        |
+        |         | c1        | nb   | lb    | b.mp3        | b.jpg        | b.jpg            | b.mkv        |
         """
         xpath_match = [
             self.xp.question_label_in_body("Question 1"),
@@ -1268,10 +1299,16 @@ class TestTranslationsChoices(PyxformTestCase):
             self.xp.choice_instance_itext_label(DEFAULT_LANG, "c1", "la", 0),
             self.xp.choice_instance_itext_form(DEFAULT_LANG, "c1", "audio", "a.mp3", 0),
             self.xp.choice_instance_itext_form(DEFAULT_LANG, "c1", "image", "a.jpg", 0),
+            self.xp.choice_instance_itext_form(
+                DEFAULT_LANG, "c1", "big-image", "a.jpg", 0
+            ),
             self.xp.choice_instance_itext_form(DEFAULT_LANG, "c1", "video", "a.mkv", 0),
             self.xp.choice_instance_itext_label(DEFAULT_LANG, "c1", "lb", 1),
             self.xp.choice_instance_itext_form(DEFAULT_LANG, "c1", "audio", "b.mp3", 1),
             self.xp.choice_instance_itext_form(DEFAULT_LANG, "c1", "image", "b.jpg", 1),
+            self.xp.choice_instance_itext_form(
+                DEFAULT_LANG, "c1", "big-image", "b.jpg", 1
+            ),
             self.xp.choice_instance_itext_form(DEFAULT_LANG, "c1", "video", "b.mkv", 1),
         ]
         self.assertPyxformXform(
@@ -1286,10 +1323,10 @@ class TestTranslationsChoices(PyxformTestCase):
         | survey  |               |       |            |               |
         |         | type          | name  | label      | choice_filter |
         |         | select_one c1 | q1    | Question 1 | q1 != ''      |
-        | choices |           |      |                 |                        |                        |                        |
-        |         | list name | name | label::Eng (en) | media::audio::Eng (en) | media::image::Eng (en) | media::video::Eng (en) |
-        |         | c1        | na   | la              | a.mp3                  | a.jpg                  | a.mkv                  |
-        |         | c1        | nb   | lb              | b.mp3                  | b.jpg                  | b.mkv                  |
+        | choices |           |      |                 |                        |                        |                            |                        |
+        |         | list name | name | label::Eng (en) | media::audio::Eng (en) | media::image::Eng (en) | media::big-image::Eng (en) | media::video::Eng (en) |
+        |         | c1        | na   | la              | a.mp3                  | a.jpg                  | a.jpg                      | a.mkv                  |
+        |         | c1        | nb   | lb              | b.mp3                  | b.jpg                  | b.jpg                      | b.mkv                  |
         """
         xpath_match = [
             self.xp.question_label_in_body("Question 1"),
@@ -1299,10 +1336,12 @@ class TestTranslationsChoices(PyxformTestCase):
             self.xp.choice_instance_itext_label("Eng (en)", "c1", "la", 0),
             self.xp.choice_instance_itext_form("Eng (en)", "c1", "audio", "a.mp3", 0),
             self.xp.choice_instance_itext_form("Eng (en)", "c1", "image", "a.jpg", 0),
+            self.xp.choice_instance_itext_form("Eng (en)", "c1", "big-image", "a.jpg", 0),
             self.xp.choice_instance_itext_form("Eng (en)", "c1", "video", "a.mkv", 0),
             self.xp.choice_instance_itext_label("Eng (en)", "c1", "lb", 1),
             self.xp.choice_instance_itext_form("Eng (en)", "c1", "audio", "b.mp3", 1),
             self.xp.choice_instance_itext_form("Eng (en)", "c1", "image", "b.jpg", 1),
+            self.xp.choice_instance_itext_form("Eng (en)", "c1", "big-image", "b.jpg", 1),
             self.xp.choice_instance_itext_form("Eng (en)", "c1", "video", "b.mkv", 1),
         ]
         self.assertPyxformXform(
@@ -1391,14 +1430,15 @@ class TestTranslationsChoices(PyxformTestCase):
         |         | type          | name  | label      |
         |         | select_one c1 | q1    | Question 1 |
         | choices |           |      |                 |
-        |         | list name | name | label | label::eng | media::audio::eng | media::image::eng | media::video::eng |
-        |         | c1        | na   | la-d  | la-e       | la-d.mp3          | la-d.jpg          | la-d.mkv          |
-        |         | c1        | nb   | lb-d  | lb-e       | lb-d.mp3          | lb-d.jpg          | lb-d.mkv          |
+        |         | list name | name | label | label::eng | media::audio::eng | media::image::eng | media::big-image::eng | media::video::eng |
+        |         | c1        | na   | la-d  | la-e       | la-d.mp3          | la-d.jpg          | la-d.jpg              | la-d.mkv          |
+        |         | c1        | nb   | lb-d  | lb-e       | lb-d.mp3          | lb-d.jpg          | lb-d.jpg              | lb-d.mkv          |
         """
         cols = {
             CHOICES: {
                 DEFAULT_LANG: (
                     "media::image",
+                    "media::big-image",
                     "media::video",
                     "media::audio",
                 )
@@ -1419,17 +1459,21 @@ class TestTranslationsChoices(PyxformTestCase):
                 self.xp.choice_itext_label("eng", "na", "la-e"),
                 self.xp.choice_itext_form("eng", "na", "audio", "la-d.mp3"),
                 self.xp.choice_itext_form("eng", "na", "image", "la-d.jpg"),
+                self.xp.choice_itext_form("eng", "na", "big-image", "la-d.jpg"),
                 self.xp.choice_itext_form("eng", "na", "video", "la-d.mkv"),
                 self.xp.choice_no_itext_form(DEFAULT_LANG, "na", "audio", "la-d.mp3"),
                 self.xp.choice_no_itext_form(DEFAULT_LANG, "na", "image", "la-d.jpg"),
+                self.xp.choice_no_itext_form(DEFAULT_LANG, "na", "big-image", "la-d.jpg"),
                 self.xp.choice_no_itext_form(DEFAULT_LANG, "na", "video", "la-d.mkv"),
                 self.xp.choice_itext_label(DEFAULT_LANG, "nb", "lb-d"),
                 self.xp.choice_itext_label("eng", "nb", "lb-e"),
                 self.xp.choice_itext_form("eng", "nb", "audio", "lb-d.mp3"),
                 self.xp.choice_itext_form("eng", "nb", "image", "lb-d.jpg"),
+                self.xp.choice_itext_form("eng", "nb", "big-image", "lb-d.jpg"),
                 self.xp.choice_itext_form("eng", "nb", "video", "lb-d.mkv"),
                 self.xp.choice_no_itext_form(DEFAULT_LANG, "nb", "audio", "lb-d.mp3"),
                 self.xp.choice_no_itext_form(DEFAULT_LANG, "nb", "image", "lb-d.jpg"),
+                self.xp.choice_no_itext_form(DEFAULT_LANG, "nb", "big-image", "lb-d.jpg"),
                 self.xp.choice_no_itext_form(DEFAULT_LANG, "nb", "video", "lb-d.mkv"),
                 self.xp.language_is_default(DEFAULT_LANG),
                 self.xp.language_is_not_default("eng"),
@@ -1446,9 +1490,9 @@ class TestTranslationsChoices(PyxformTestCase):
         |         | type          | name  | label      |
         |         | select_one c1 | q1    | Question 1 |
         | choices |           |      |                 |
-        |         | list name | name | label | label::eng | media::audio::eng | media::image::eng | media::video::eng |
-        |         | c1        | na   | la-d  | la-e       | la-d.mp3          | la-d.jpg          | la-d.mkv          |
-        |         | c1        | nb   | lb-d  | lb-e       | lb-d.mp3          | lb-d.jpg          | lb-d.mkv          |
+        |         | list name | name | label | label::eng | media::audio::eng | media::image::eng | media::big-image::eng | media::video::eng |
+        |         | c1        | na   | la-d  | la-e       | la-d.mp3          | la-d.jpg          | la-d.jpg              | la-d.mkv          |
+        |         | c1        | nb   | lb-d  | lb-e       | lb-d.mp3          | lb-d.jpg          | lb-d.jpg              | lb-d.mkv          |
         """
         # cols = {
         #     CHOICES: {
@@ -1474,10 +1518,12 @@ class TestTranslationsChoices(PyxformTestCase):
                 self.xp.choice_itext_label("eng", "na", "la-e"),
                 self.xp.choice_itext_form("eng", "na", "audio", "la-d.mp3"),
                 self.xp.choice_itext_form("eng", "na", "image", "la-d.jpg"),
+                self.xp.choice_itext_form("eng", "na", "big-image", "la-d.jpg"),
                 self.xp.choice_itext_form("eng", "na", "video", "la-d.mkv"),
                 self.xp.choice_itext_label("eng", "nb", "lb-e"),
                 self.xp.choice_itext_form("eng", "nb", "audio", "lb-d.mp3"),
                 self.xp.choice_itext_form("eng", "nb", "image", "lb-d.jpg"),
+                self.xp.choice_itext_form("eng", "nb", "big-image", "lb-d.jpg"),
                 self.xp.choice_itext_form("eng", "nb", "video", "lb-d.mkv"),
                 self.xp.language_is_default("eng"),
                 self.xp.language_no_itext(DEFAULT_LANG),

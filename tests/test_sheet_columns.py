@@ -29,7 +29,7 @@ class InvalidSurveyColumnsTests(PyxformTestCase):
             errored=False,
         )
 
-    def test_missing_label(self):
+    def test_label_or_hint__must_be_provided(self):
         self.assertPyxformXform(
             name="invalidcols",
             ss_structure={"survey": [{"type": "text", "name": "q1"}]},
@@ -61,6 +61,29 @@ class InvalidSurveyColumnsTests(PyxformTestCase):
             |        | text | c    |       | m.png        |      |
             """,
             xml__contains=prep_for_xml_contains(expected),
+        )
+
+    def test_big_image_invalid_if_no_image(self):
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |      |      |                  |
+            |        | type | name | media::big-image |
+            |        | text | c    | m.png            |
+            """,
+            errored=True,
+            error__contains=["must also specify an image"],
+        )
+
+    def test_media_column__is_ignored(self):
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |      |      |       |
+            |        | type | name | media |
+            |        | text | c    | m.png |
+            """,
+            xml__excludes=["m.png"],
         )
 
     def test_column_case(self):
@@ -158,12 +181,7 @@ class InvalidChoiceSheetColumnsTests(PyxformTestCase):
 
     def test_clear_filename_error_message(self):
         """Test clear filename error message"""
-        error_message = (
-            "The name 'bad@filename' is an invalid XML tag, it "
-            "contains an invalid character '@'. Names must begin"
-            " with a letter, colon, or underscore, subsequent "
-            "characters can include numbers, dashes, and periods"
-        )
+        error_message = "The name 'bad@filename' contains an invalid character '@'. Names must begin with a letter, colon, or underscore. Other characters can include numbers, dashes, and periods."
         self.assertPyxformXform(
             name="bad@filename",
             ss_structure=self._simple_choice_ss(
