@@ -737,10 +737,10 @@ class TestTranslationsSurvey(PyxformTestCase):
             xml__xpath_match=[
                 self.xp.question_label_references_itext(),
                 self.xp.question_itext_like_label(
-                    "english", "Show When: $[select\_1\_s] = 1"
+                    "english", "Show When: $[select\_1\_s] = 1"  # noqa
                 ),
                 self.xp.question_itext_like_label(
-                    "indonesian", "Show When: $[select\_1\_s] = 2"
+                    "indonesian", "Show When: $[select\_1\_s] = 2"  # noqa
                 ),
             ],
             annotate=["all"],
@@ -784,10 +784,10 @@ class TestTranslationsSurvey(PyxformTestCase):
             xml__xpath_match=[
                 self.xp.question_label_references_itext(),
                 self.xp.question_itext_like_label(
-                    "english", "Constraint: $[select\_1\_s] = 1"
+                    "english", "Constraint: $[select\_1\_s] = 1"  # noqa
                 ),
                 self.xp.question_itext_like_label(
-                    "indonesian", "Constraint: $[select\_1\_s] = 2"
+                    "indonesian", "Constraint: $[select\_1\_s] = 2"  # noqa
                 ),
             ],
             annotate=["all"],
