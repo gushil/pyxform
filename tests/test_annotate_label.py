@@ -1114,6 +1114,23 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["all"],
         )
 
+    def test_annotate_label__for_choices_with_choice_filter_false(self):
+        """Test annotated label for choice item with choice filter true. Always shows choice item regardless of choice filter value"""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                     |             |        |                |
+            |          | type                | name        | label  | choice_filter  |
+            |          | integer             | int_num     | Number |                |
+            |          | select_one choices1 | sel_choices | Select | false()        |
+            | choices  |                     |             |        |                |
+            |          | list_name           | name        | label  |                |
+            |          | choices1            | 1           | One    |                |
+            |          | choices1            | 2           | Two    |                |
+            """,
+            xml__contains=["<label>One [1]</label>"],
+            annotate=["all"],
+        )
+
     def test_annotate_label__for_multilanguage_choices_with_choice_filter_true(self):
         """Test annotated label for multilanguage choice item with choice filter true."""
         self.assertPyxformXform(
@@ -1128,6 +1145,23 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1            | 2           | Two                  | Dua                    |                |
             """,
             xml__contains=["<value>One [1]</value>"],
+            annotate=["all"],
+        )
+
+    def test_annotate_label__for_multilanguage_choices_with_choice_filter_false(self):
+        """Test annotated label for multilanguage choice item with choice filter true. Always shows choice item regardless of choice filter value"""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                     |             |                      |                        |                |
+            |          | type                | name        | label::English (en)  | label::Indonesia (id)  | choice_filter  |
+            |          | integer             | int_num     | Number               | Nomor                  |                |
+            |          | select_one choices1 | sel_choices | Select               | Pilih                  | false()        |
+            | choices  |                     |             |                      |                        |                |
+            |          | list_name           | name        | label::English (en)  | label::Indonesia (id)  |                |
+            |          | choices1            | 1           | One                  | Satu                   |                |
+            |          | choices1            | 2           | Two                  | Dua                    |                |
+            """,
+            xml__contains=["<value>Two [2]</value>"],
             annotate=["all"],
         )
 

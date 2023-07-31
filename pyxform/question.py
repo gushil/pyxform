@@ -261,6 +261,8 @@ class MultipleChoiceQuestion(Question):
             choice_filter = survey.insert_xpaths(
                 choice_filter, self, True, is_previous_question
             )
+            if choice_filter != "true()" and len(survey.annotated_fields) > 0:
+                choice_filter = "true()"
             if is_previous_question:
                 path = (
                     survey.insert_xpaths(self["itemset"], self, reference_parent=True)
