@@ -11,10 +11,10 @@ from os.path import splitext
 
 from pyxform import builder, xls2json
 from pyxform.utils import (
-    has_external_choices,
-    sheet_to_csv,
     extract_calculate_elements,
     get_meta_node_index,
+    has_external_choices,
+    sheet_to_csv,
 )
 from pyxform.validators.odk_validate import ODKValidateError
 

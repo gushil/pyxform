@@ -173,6 +173,7 @@ class Survey(Section):
             "style": str,
             "attribute": dict,
             "namespaces": str,
+            constants.ENTITY_RELATED: str,
         }
     )  # yapf: disable
 
@@ -204,7 +205,9 @@ class Survey(Section):
 
     def get_nsmap(self):
         """Add additional namespaces"""
-        namespaces = getattr(self, constants.NAMESPACES, None)
+        namespaces = getattr(self, constants.NAMESPACES, "")
+        if getattr(self, constants.ENTITY_RELATED, "false") == "true":
+            namespaces += " entities=http://www.opendatakit.org/xforms/entities"
 
         if namespaces and isinstance(namespaces, str):
             nslist = [
@@ -572,13 +575,15 @@ class Survey(Section):
         self._add_empty_translations()
 
         model_kwargs = {"odk:xforms-version": constants.CURRENT_XFORMS_VERSION}
+        if getattr(self, constants.ENTITY_RELATED, "false") == "true":
+            model_kwargs["entities:entities-version"] = constants.CURRENT_ENTITIES_VERSION
 
         model_children = []
         if self._translations:
             model_children.append(self.itext())
         model_children += [node("instance", self.xml_instance())]
         model_children += list(self._generate_instances())
-        model_children += self.xml_bindings()
+        model_children += self.xml_descendent_bindings()
         model_children += self.xml_actions()
 
         if self.submission_url or self.public_key or self.auto_send or self.auto_delete:
@@ -796,7 +801,8 @@ class Survey(Section):
             if parent and not parent.get("choice_filter"):
                 translation_key = survey_element.get_xpath() + ":label"
                 media_dict = survey_element.get("media")
-                _set_up_media_translations(media_dict, translation_key)
+                if isinstance(media_dict, dict):
+                    _set_up_media_translations(media_dict, translation_key)
 
     def itext(self):
         """
@@ -849,7 +855,7 @@ class Survey(Section):
                         itext_nodes.append(
                             node("value", value, toParseString=output_inserted)
                         )
-                    elif media_type == "image":
+                    elif media_type == "image" or media_type == "big-image":
                         if value != "-":
                             itext_nodes.append(
                                 node(
