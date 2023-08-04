@@ -466,7 +466,7 @@ class SurveyElement(dict):
                 "custom",
             ]:
                 # Prepend * with \
-                attr_value = attr_value.replace("*", "\*")
+                attr_value = attr_value.replace("*", "\*")  # noqa
 
         # Replace { with [
         attr_value = attr_value.replace("{", "[")

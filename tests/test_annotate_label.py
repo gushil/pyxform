@@ -538,7 +538,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | calculate | check2     |                                       | 2+1         |                   |
             |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 2 |
             """,
-            xml__contains=["[Show When: $[check2] gt 1 \* 2]"],
+            xml__contains=["[Show When: $[check2] gt 1 \* 2]"],  # noqa
             annotate=["all"],
         )
 
@@ -590,7 +590,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | calculate | check2     |                                       | 2+1         |                   |
             |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 3 |
             """,
-            xml__contains=["[Required: $[check2] gt 1 \* 3]"],
+            xml__contains=["[Required: $[check2] gt 1 \* 3]"],  # noqa
             annotate=["all"],
         )
 
@@ -658,7 +658,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | calculate | check2     |                                       | 2+1         |                   |
             |        | note      | info       | This is info:  ${check1} / ${check2}  |             | ${check2} > 1 * 4 |
             """,
-            xml__contains=["[Constraint: $[check2] gt 1 \* 4]"],
+            xml__contains=["[Constraint: $[check2] gt 1 \* 4]"],  # noqa
             annotate=["all"],
         )
 
@@ -685,7 +685,7 @@ class AnnotateLabelTest(PyxformTestCase):
         self.assertPyxformXform(
             name="data",
             md="""
-            | survey |           |            |                                       |             |                   |                          |  
+            | survey |           |            |                                       |             |                   |                          |
             |        | type      | name       | label                                 | calculation | constraint        | bind::oc:constraint-type |
             |        | string    | field_name | Event_1                               |             |                   |                          |
             |        | calculate | check1     |                                       | 1+1         |                   |                          |
@@ -701,7 +701,7 @@ class AnnotateLabelTest(PyxformTestCase):
         self.assertPyxformXform(
             name="data",
             md="""
-            | survey |           |            |                                       |             |                   |                          |  
+            | survey |           |            |                                       |             |                   |                          |
             |        | type      | name       | label                                 | calculation | constraint        | bind::oc:constraint-type |
             |        | string    | field_name | Event_1                               |             |                   |                          |
             |        | calculate | check1     |                                       | 1+1         |                   |                          |
@@ -726,7 +726,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | calculate | check2     |                                       | 2+1         |               |
             |        | note      | info       | This is info:  ${check1} / ${check2}  |             |               |
             """,
-            xml__contains=["[Default: default\_name]"],
+            xml__contains=["[Default: default\_name]"],  # noqa
             annotate=["all"],
         )
 
@@ -790,7 +790,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | note      | info       | This is info:  ${check1} / ${check2}  |             |               |
             """,
             xml__contains=[
-                '&lt;span style="color: deepskyblue"&gt; [Default: default\_name]&lt;/span&gt;'
+                '&lt;span style="color: deepskyblue"&gt; [Default: default\_name]&lt;/span&gt;'  # noqa
             ],
             annotate=["all"],
         )
@@ -807,7 +807,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | integer | age_visit  | Age at date of visit: | round((decimal-date-time(${date_visit}) - decimal-date-time(${dob})) div 365.25 - .5, 0) |          | yes      |
             """,
             xml__contains=[
-                "[Calculation: round((decimal-date-time($[date\_visit]) - decimal-date-time($[dob])) div 365.25 - .5, 0)]"
+                "[Calculation: round((decimal-date-time($[date\_visit]) - decimal-date-time($[dob])) div 365.25 - .5, 0)]"  # noqa
             ],
             annotate=["all"],
         )
@@ -824,7 +824,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | integer | age_visit  | Age at date of visit: | round((decimal-date-time(${date_visit}) - decimal-date-time(${dob})) div 365.25 - .5, 0) |          | yes      |
             """,
             xml__contains=[
-                '&lt;span style="color: maroon"&gt; [Calculation: round((decimal-date-time($[date\_visit]) - decimal-date-time($[dob])) div 365.25 - .5, 0)]&lt;/span&gt;'
+                '&lt;span style="color: maroon"&gt; [Calculation: round((decimal-date-time($[date\_visit]) - decimal-date-time($[dob])) div 365.25 - .5, 0)]&lt;/span&gt;'  # noqa
             ],
             annotate=["all"],
         )
@@ -896,9 +896,9 @@ class AnnotateLabelTest(PyxformTestCase):
             """,
             xml__contains=[
                 '<input ref="/data/calculate_type_1">',
-                '&lt;span style="color: orangered"&gt; [Name: calculate\_type\_1]&lt;/span&gt;&lt;span style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: blue"&gt; [Item Group: IG\_1]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 1+1]&lt;/span&gt;</label>',
+                '&lt;span style="color: orangered"&gt; [Name: calculate\_type\_1]&lt;/span&gt;&lt;span style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: blue"&gt; [Item Group: IG\_1]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 1+1]&lt;/span&gt;</label>',  # noqa
                 '<input ref="/data/calculate_type_2">',
-                '&lt;span style="color: orangered"&gt; [Name: calculate\_type\_2]&lt;/span&gt;&lt;span style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: blue"&gt; [Item Group: IG\_2]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 2+3]&lt;/span&gt;</label>',
+                '&lt;span style="color: orangered"&gt; [Name: calculate\_type\_2]&lt;/span&gt;&lt;span style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: blue"&gt; [Item Group: IG\_2]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 2+3]&lt;/span&gt;</label>',  # noqa
             ],
             annotate=["all"],
         )
@@ -938,7 +938,7 @@ class AnnotateLabelTest(PyxformTestCase):
         self.assertPyxformXform(
             name="data",
             md="""
-            | survey |           |            |                      |          |                                                                                          |               
+            | survey |           |            |                      |          |                                                                                          |
             |        | type      | name       | label                | readonly | calculation                                                                              |
             |        | date      | dob        | Date of Birth:       |          |                                                                                          |
             |        | date      | date_visit | Date of Visit:       |          |                                                                                          |
@@ -953,7 +953,7 @@ class AnnotateLabelTest(PyxformTestCase):
         self.assertPyxformXform(
             name="data",
             md="""
-            | survey |           |            |                      |          |                                                                                          |               
+            | survey |           |            |                      |          |                                                                                          |
             |        | type      | name       | label                | readonly | calculation                                                                              |
             |        | date      | dob        | Date of Birth:       |          |                                                                                          |
             |        | date      | date_visit | Date of Visit:       |          |                                                                                          |
@@ -1074,7 +1074,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1            | 1       | One    |                |
             |          | choices1            | 2       | Two    |                |
             """,
-            xml__contains=["[Choice Filter: $[int\_num] gt 1]"],
+            xml__contains=["[Choice Filter: $[int\_num] gt 1]"],  # noqa
             annotate=["all"],
         )
 
@@ -1092,7 +1092,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |          | choices1            | 2       | Two    |                |
             """,
             xml__contains=[
-                '&lt;span style="color: dodgerblue"&gt; [Choice Filter: $[int\_num] gt 1]&lt;/span&gt;'
+                '&lt;span style="color: dodgerblue"&gt; [Choice Filter: $[int\_num] gt 1]&lt;/span&gt;'  # noqa
             ],
             annotate=["all"],
         )
@@ -1168,7 +1168,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type      | name            | label       | video          |
             |        | text      | text_with_video | video Text: | video_file.mp3 |
             """,
-            xml__contains=["[Video: video\_file.mp3]"],
+            xml__contains=["[Video: video\_file.mp3]"],  # noqa
             annotate=["all"],
         )
 
@@ -1182,7 +1182,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | text      | text_with_video | video Text: | video_file.mp3 |
             """,
             xml__contains=[
-                '&lt;span style="color: darkviolet"&gt; [Video: video\_file.mp3]&lt;/span&gt;'
+                '&lt;span style="color: darkviolet"&gt; [Video: video\_file.mp3]&lt;/span&gt;'  # noqa
             ],
             annotate=["all"],
         )
@@ -1196,7 +1196,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | type      | name            | label       | audio          |
             |        | text      | text_with_audio | Audio Text: | audio_file.mp3 |
             """,
-            xml__contains=["[Audio: audio\_file.mp3]"],
+            xml__contains=["[Audio: audio\_file.mp3]"],  # noqa
             annotate=["all"],
         )
 
@@ -1210,7 +1210,7 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | text      | text_with_audio | Audio Text: | audio_file.mp3 |
             """,
             xml__contains=[
-                '&lt;span style="color: darkviolet"&gt; [Audio: audio\_file.mp3]&lt;/span&gt;'
+                '&lt;span style="color: darkviolet"&gt; [Audio: audio\_file.mp3]&lt;/span&gt;'  # noqa
             ],
             annotate=["all"],
         )
