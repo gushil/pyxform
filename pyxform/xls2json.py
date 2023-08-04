@@ -62,7 +62,9 @@ def merge_dicts(dict_a, dict_b, default_key="default"):
             return dict_a
         dict_b = {default_key: dict_b}
 
-    all_keys = set(dict_a.keys()).union(set(dict_b.keys()))
+    all_keys = list(dict_a.keys()) + list(dict_b.keys())
+    # Remove duplicates and keep the order
+    all_keys = list(dict.fromkeys(all_keys))
 
     out_dict = dict()
     for key in all_keys:

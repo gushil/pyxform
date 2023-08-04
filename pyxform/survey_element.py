@@ -449,6 +449,7 @@ class SurveyElement(dict):
                 "calculation",
                 "trigger",
                 "repeat_count",
+                "custom",
             ]:
                 # Replace > with gt
                 attr_value = attr_value.replace(">", "gt")
@@ -462,6 +463,7 @@ class SurveyElement(dict):
                 "default",
                 "calculation",
                 "required",
+                "custom",
             ]:
                 # Prepend * with \
                 attr_value = attr_value.replace("*", "\*")
@@ -519,6 +521,7 @@ class SurveyElement(dict):
                 "external": "color: indigo",
                 "contactdata": "color: tomato",
                 "identifier": "color: tomato",
+                "custom": "color: black",
             }
 
             # Item label
@@ -536,8 +539,8 @@ class SurveyElement(dict):
                 )
             else:
                 # Non-Choice fields
-                for idx, val in enumerate(survey.annotated_fields):
-                    if not hasattr(self, val) and val not in [
+                for idx, annotated_field in enumerate(survey.annotated_fields):
+                    if not hasattr(self, annotated_field) and annotated_field not in [
                         "itemgroup",
                         "relevant",
                         "required",
@@ -553,17 +556,21 @@ class SurveyElement(dict):
                         "external",
                         "contactdata",
                         "identifier",
+                        "custom",
                     ]:
                         continue
 
-                    attr_label = val.title()
+                    attr_label = annotated_field.title()
                     attr_value = ""
                     attr_style = ""
-                    if hasattr(self, val):
-                        attr_value = getattr(self, val)
+                    field_annotations = {}
+                    custom_annotations = {}
+
+                    if hasattr(self, annotated_field):
+                        attr_value = getattr(self, annotated_field)
 
                     # Annotated field handling
-                    if val == "type":
+                    if annotated_field == "type":
                         if attr_value in [
                             constants.SELECT_ONE,
                             constants.SELECT_ALL_THAT_APPLY,
@@ -586,55 +593,55 @@ class SurveyElement(dict):
                                 attr_value += "_from_file " + getattr(self, "itemset")
                         elif attr_value == "photo":
                             attr_value = "image"
-                    elif val == "itemgroup":
+                    elif annotated_field == "itemgroup":
                         attr_value = self.get("bind", {}).get("oc:itemgroup", "")
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_ITEMGROUP
-                    elif val == "relevant":
+                    elif annotated_field == "relevant":
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("bind", {}).get("relevant", ""), lang
                         )
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_RELEVANT
-                    elif val == "required":
+                    elif annotated_field == "required":
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("bind", {}).get("required", ""), lang
                         )
-                    elif val == "required_type":
+                    elif annotated_field == "required_type":
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("bind", {}).get("oc:required-type", ""), lang
                         )
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_REQUIRED_TYPE
-                    elif val == "constraint":
+                    elif annotated_field == "constraint":
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("bind", {}).get("constraint", ""), lang
                         )
-                    elif val == "constraint_type":
+                    elif annotated_field == "constraint_type":
                         attr_value = self.get("bind", {}).get("oc:constraint-type", "")
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_CONSTRAINT_TYPE
-                    elif val == "calculation":
+                    elif annotated_field == "calculation":
                         attr_value = self.get("bind", {}).get("calculate", "")
-                    elif val == "readonly":
+                    elif annotated_field == "readonly":
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("bind", {}).get("readonly", ""), lang
                         )
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_READONLY
-                    elif val == "image":
+                    elif annotated_field == "image":
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("media", {}).get("image", ""), lang
                         )
-                    elif val == "video":
+                    elif annotated_field == "video":
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("media", {}).get("video", ""), lang
                         )
-                    elif val == "audio":
+                    elif annotated_field == "audio":
                         attr_value = self.get_field_or_lang_dict_value(
                             self.get("media", {}).get("audio", ""), lang
                         )
-                    elif val == "repeat_count" and self.type == "repeat":
+                    elif annotated_field == "repeat_count" and self.type == "repeat":
                         repeat_count_model = next(
                             filter(
                                 lambda x: x["name"] == self.name + "_count",
@@ -648,45 +655,75 @@ class SurveyElement(dict):
                             )
                             if attr_value != "":
                                 attr_label = constants.ANNOTATE_REPEAT_COUNT
-                    elif val == "external":
+                    elif annotated_field == "external":
                         attr_value = self.get("bind", {}).get("oc:external", "")
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_EXTERNAL
-                    elif val == "contactdata":
+                    elif annotated_field == "contactdata":
                         attr_value = self.get("instance", {}).get("oc:contactdata", "")
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_CONTACTDATA
-                    elif val == "choice_filter":
+                    elif annotated_field == "choice_filter":
                         if attr_value != "":
                             attr_label = constants.ANNOTATE_CHOICE_FILTER
-                    elif val == "identifier":
+                    elif annotated_field == "identifier":
                         attr_value = self.get("instance", {}).get("oc:identifier", "")
+                    elif annotated_field == "custom":
+                        # Custom annotations
+                        custom_annotation_prefix = "oc:oc_annotation_"
+                        custom_annotations = dict(
+                            (k, v)
+                            for k, v in self.get("bind").items()
+                            if k.startswith(custom_annotation_prefix)
+                        )
+                        if custom_annotations:
+                            for key in custom_annotations.keys():
+                                attr_value = custom_annotations[key]
+                                attr_label = key[len(custom_annotation_prefix) :]
+                                if attr_label != "":
+                                    # attr_label should only contains aplhanumeric, underscore, and hypens chars
+                                    if not bool(
+                                        re.match(r"^[A-Za-z0-9_-]+$", attr_label)
+                                    ):
+                                        msg = "Custom annotation labels can only include letters, digits, underscores, and hyphens."
+                                        raise PyXFormError(msg)
+                                    # Change _ with space in custom annotation label
+                                    if "_" in attr_label:
+                                        attr_label = attr_label.replace("_", " ").strip()
+
+                                field_annotations[attr_label] = attr_value
 
                     # Annotated value style
-                    if val in annotated_value_styles.keys():
-                        attr_style = annotated_value_styles[val]
+                    if annotated_field in annotated_value_styles.keys():
+                        attr_style = annotated_value_styles[annotated_field]
+
+                    if len(custom_annotations) == 0:
+                        field_annotations[attr_label] = attr_value
 
                     # Annotated value assignment
-                    if attr_label != "" and attr_value != "":
-                        attr_value = "".join(attr_value.splitlines())
-                        attr_value = self.annotated_value_processing(attr_value, val)
-                        annotated_value = "{}: {}".format(attr_label, attr_value)
-                        attributes = {}
-                        if attr_style != "":
-                            attributes["style"] = attr_style
-
-                        annotated_label_value = " [{}]".format(annotated_value)
-
-                        # Annotation(s) should be displayed in newline after item's Label
-                        if idx == 0:
-                            annotated_label += "\n"
-
-                        if attr_style == "":
-                            annotated_label += annotated_label_value
-                        else:
-                            annotated_label += '<span style="{}">{}</span>'.format(
-                                attr_style, annotated_label_value
+                    for label, value in field_annotations.items():
+                        if label != "" and value != "":
+                            value = "".join(value.splitlines())
+                            value = self.annotated_value_processing(
+                                value, annotated_field
                             )
+                            annotated_value = "{}: {}".format(label, value)
+                            attributes = {}
+                            if attr_style != "":
+                                attributes["style"] = attr_style
+
+                            annotated_label_value = " [{}]".format(annotated_value)
+
+                            # Annotation(s) should be displayed in newline after item's Label
+                            if idx == 0:
+                                annotated_label += "\n"
+
+                            if attr_style == "":
+                                annotated_label += annotated_label_value
+                            else:
+                                annotated_label += '<span style="{}">{}</span>'.format(
+                                    attr_style, annotated_label_value
+                                )
 
             if is_select_one_from_file:
                 annotated_label += "<br>"

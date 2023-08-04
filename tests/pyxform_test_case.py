@@ -116,6 +116,7 @@ class PyxformMarkdown:
             "external",
             "contactdata",
             "identifier",
+            "custom",
         ]
         # Set annotated_fields from annotate parameter
         annotate = kwargs.get("annotate", [])
