@@ -1248,3 +1248,70 @@ class AnnotateLabelTest(PyxformTestCase):
             ],
             annotate=["all"],
         )
+
+    def test_annotated_label__custom_annotation(self):
+        """Test annotated label for item with custom annotation."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                                   |             |                                    |
+            |        | type      | name                              | label       | bind::oc:oc_annotation_customlabel |
+            |        | text      | text_with_custom_annotation_label | Text label: | custom annotation content          |
+            """,
+            xml__contains=["[customlabel: custom annotation content]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__custom_annotation_style(self):
+        """Test annotated label style for item with custom annotation."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                                   |             |                                    |
+            |        | type      | name                              | label       | bind::oc:oc_annotation_customlabel |
+            |        | text      | text_with_custom_annotation_label | Text label: | custom annotation content          |
+            """,
+            xml__contains=[
+                ';&lt;span style="color: black"&gt; [customlabel: custom annotation content]&lt;/span&gt;'
+            ],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__custom_annotation_label_preserve_case(self):
+        """Test annotated label for item with custom annotation should preserve its label case."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                                   |             |                                    |
+            |        | type      | name                              | label       | bind::oc:oc_annotation_cUStomLabel |
+            |        | text      | text_with_custom_annotation_label | Text label: | custom annotation content          |
+            """,
+            xml__contains=["[cUStomLabel: custom annotation content]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__custom_annotation_label_replace_underscore_with_space(self):
+        """Test annotated label for item with custom annotation should change underscore chars in its label with space."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                                   |             |                                     |
+            |        | type      | name                              | label       | bind::oc:oc_annotation_custom_label |
+            |        | text      | text_with_custom_annotation_label | Text label: | custom annotation content           |
+            """,
+            xml__contains=["[custom label: custom annotation content]"],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__wrong_custom_annotation_not_displayed(self):
+        """Test annotated label for item with wrong custom annotation will not be displayed."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                                   |             |                                      |
+            |        | type      | name                              | label       | bind::oc:oc_annotations_custom_label |
+            |        | text      | text_with_custom_annotation_label | Text label: | custom annotation content            |
+            """,
+            xml_not_contains=["[custom label: custom annotation content]"],
+            annotate=["all"],
+        )
