@@ -431,13 +431,15 @@ def extract_calculate_elements(json_node):
         if "children" in json_node and isinstance(json_node["children"], list):
             calculate_elements.extend(extract_calculate_elements(json_node["children"]))
     elif isinstance(json_node, list):
-        for element in json_node:
-            if element.get("type") == "calculate" and element.get("bind", {}).get(
-                "calculate"
+        # Iterating over copy of json_node list because we do operation (remove) on json_node list
+        for element in json_node[:]:
+            if element.get("type") == "calculate" and (
+                element.get("bind", {}).get("calculate") is not None
+                or element.get("default") is not None
             ):
                 calculate_elements.append(element)
                 json_node.remove(element)
-            if (
+            elif (
                 isinstance(element, dict)
                 and element.get("children")
                 and isinstance(element["children"], list)
