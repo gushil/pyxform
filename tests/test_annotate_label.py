@@ -863,21 +863,53 @@ class AnnotateLabelTest(PyxformTestCase):
         )
 
     def test_annotated_label__calculation_type_in_group(self):
-        """Test annotated label for calculation type item in group should be extracted to outside group and appended in the end of form"""
+        """Test annotated label for calculation type item in group should be extracted out of group and appended in the end of form"""
         self.assertPyxformXform(
             name="data",
             md="""
-            | survey |              |                |                |               |          |          |
-            |        | type         | name           | label          | calculation   | required | readonly |
-            |        | begin group  | group_1        |                |               |          |          |
-            |        | calculate    | calculate_type |                | 2+3           |          |          |
-            |        | date         | dob            | Date of birth: |               | yes      |          |
-            |        | date         | date_visit     | Date of visit: |               | yes      |          |
-            |        | end group    |                |                |               |          |          |
+            | survey |              |                  |                |               |          |          |
+            |        | type         | name             | label          | calculation   | required | default  |
+            |        | begin group  | group_1          |                |               |          |          |
+            |        | calculate    | calculate_type_1 |                | 2+3           |          |          |
+            |        | date         | dob              | Date of birth: |               | yes      |          |
+            |        | date         | date_visit       | Date of visit: |               | yes      |          |
+            |        | calculate    | calculate_type_2 |                |               |          | 1+1      |
+            |        | end group    |                  |                |               |          |          |
             """,
             xml__contains=[
-                '<input ref="/data/calculate_type">',
+                '<input ref="/data/calculate_type_1">',
+                '<input ref="/data/calculate_type_2">',
                 'style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 2+3]&lt;/span&gt;</label>',
+                'style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: deepskyblue"&gt; [Default: 1+1]&lt;/span&gt;</label>',
+            ],
+            annotate=["all"],
+        )
+
+    def test_annotated_label__calculation_type_in_multiple_group(self):
+        """Test annotated label for calculation type item in multiple group should be extracted out of group and appended in the end of form"""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |              |                         |                |               |          |          |
+            |        | type         | name                    | label          | calculation   | required | default  |
+            |        | calculate    | calculate_type_no_group |                | 1+2           |          |          |
+            |        | begin group  | group_1                 |                |               |          |          |
+            |        | calculate    | calculate_type_group_1  |                | 2+3           |          |          |
+            |        | date         | dob                     | Date of birth: |               | yes      |          |
+            |        | date         | date_visit              | Date of visit: |               | yes      |          |
+            |        | end group    |                         |                |               |          |          |
+            |        | begin group  | group_2                 |                |               |          |          |
+            |        | calculate    | calculate_type_group_2  |                |               |          | 1+1      |
+            |        | integer      | order_no                | Order no:      |               | yes      |          |
+            |        | end group    |                         |                |               |          |          |
+            """,
+            xml__contains=[
+                '<input ref="/data/calculate_type_no_group">',
+                '<input ref="/data/calculate_type_group_1">',
+                '<input ref="/data/calculate_type_group_2">',
+                'style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 1+2]&lt;/span&gt;</label>',
+                'style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 2+3]&lt;/span&gt;</label>',
+                'style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: deepskyblue"&gt; [Default: 1+1]&lt;/span&gt;</label>',
             ],
             annotate=["all"],
         )
