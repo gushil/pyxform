@@ -2,7 +2,7 @@
 """
 Test builder module functionality.
 """
-import os   
+import os
 import re
 import xml.etree.ElementTree as ETree
 from unittest import TestCase
