@@ -2,7 +2,7 @@
 """
 Test builder module functionality.
 """
-import os
+import os   
 import re
 import xml.etree.ElementTree as ETree
 from unittest import TestCase
@@ -32,6 +32,10 @@ class BuilderTests(TestCase):
     def test_unknown_question_type(self):
         survey = utils.build_survey("unknown_question_type.xls")
         self.assertRaises(PyXFormError, survey.to_xml)
+
+    def test_unreadable_file(self):
+        with self.assertRaises(PyXFormError):
+            utils.build_survey("unreadable_file.xls")
 
     def test_uniqueness_of_section_names(self):
         # Looking at the xls file, I think this test might be broken.

@@ -129,6 +129,8 @@ def xls_to_dict(path_or_file):
             workbook = xlrd.open_workbook(file_contents=path_or_file.read())
     except xlrd.XLRDError as error:
         raise PyXFormError("Error reading .xls file: %s" % error)
+    except Exception:
+        raise PyXFormError("The XLS or XLSX file you have uploaded has been corrupted. Please resave it in Excel and try uploading it again.")
 
     def xls_clean_cell(cell: xlrdCell, row_n: int, col_key: str) -> Optional[str]:
         value = cell.value
@@ -220,6 +222,8 @@ def xlsx_to_dict(path_or_file):
         workbook = openpyxl.open(filename=path_or_file, read_only=True, data_only=True)
     except (OSError, BadZipFile, KeyError) as error:
         raise PyXFormError("Error reading .xlsx file: %s" % error)
+    except Exception:
+        raise PyXFormError("The XLS or XLSX file you have uploaded has been corrupted. Please resave it in Excel and try uploading it again.")
 
     def xlsx_clean_cell(cell: pyxlCell, row_n: int, col_key: str) -> Optional[str]:
         value = cell.value
