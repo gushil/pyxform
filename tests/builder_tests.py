@@ -33,6 +33,10 @@ class BuilderTests(TestCase):
         survey = utils.build_survey("unknown_question_type.xls")
         self.assertRaises(PyXFormError, survey.to_xml)
 
+    def test_unreadable_file(self):
+        with self.assertRaises(PyXFormError):
+            utils.build_survey("unreadable_file.xls")
+
     def test_uniqueness_of_section_names(self):
         # Looking at the xls file, I think this test might be broken.
         survey = utils.build_survey("group_names_must_be_unique.xls")
