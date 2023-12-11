@@ -212,6 +212,18 @@ class MultipleChoiceQuestion(Question):
             control_dict[key] = survey.insert_xpaths(value, self)
         control_dict["ref"] = self.get_xpath()
 
+        # Annotated form:
+        # Remove the ‘autocomplete’ appearance from the select element
+        # because it causes the options to disappear
+        if len(survey.annotated_fields) > 0:
+            if (
+                isinstance(control_dict.get("appearance"), str)
+                and "autocomplete" in control_dict.get("appearance").split()
+            ):
+                control_dict["appearance"] = re.sub(
+                    "autocomplete", "", control_dict.get("appearance")
+                ).strip()
+
         result = node(**control_dict)
         for element in self.xml_label_and_hint():
             result.appendChild(element)
