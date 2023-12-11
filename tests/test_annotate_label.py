@@ -206,6 +206,23 @@ class AnnotateLabelTest(PyxformTestCase):
             annotate=["all"],
         )
 
+    def test_annotate_label__no_autocomplete_appearance_for_select(self):
+        """Test annotated label for select one item."""
+        """Remove autocomplete appearance."""
+        self.assertPyxformXform(
+            md="""
+            | survey   |                     |      |       |                 |
+            |          | type                | name | label | appearance      |
+            |          | select_one choices1 | a    | A     | w2 autocomplete |
+            | choices  |                     |      |       |                 |
+            |          | list_name           | name | label |                 |
+            |          | choices1            | 1    | One   |                 |
+            |          | choices1            | 2    | Two   |                 |
+            """,
+            xml__contains=[r'<select1 appearance="w2"'],
+            annotate=["all"],
+        )
+
     def test_annotated_label__for_image(self):
         """Test annotated label for image."""
         self.assertPyxformXform(
