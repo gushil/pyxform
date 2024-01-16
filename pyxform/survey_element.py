@@ -683,6 +683,11 @@ class SurveyElement(dict):
                                     ):
                                         msg = "Custom annotation labels can only include letters, digits, underscores, and hyphens."
                                         raise PyXFormError(msg)
+                                    if not bool(
+                                        re.match(r"^[A-Za-z0-9]$", attr_label[0])
+                                    ):
+                                        msg = "Custom annotation labels must start with a letter or digit."
+                                        raise PyXFormError(msg)
                                     # Change _ with space in custom annotation label
                                     if "_" in attr_label:
                                         attr_label = attr_label.replace("_", " ").strip()
