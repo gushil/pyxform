@@ -1,5 +1,5 @@
 ===============
-pyxform v1.1.1+oc
+pyxform v1.1.2+oc
 ===============
 
 |python| |black|

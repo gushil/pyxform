@@ -7,7 +7,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="pyxform",
-    version="1.1.1+oc",
+    version="1.1.2+oc",
     author="github.com/xlsform",
     author_email="info@xlsform.org",
     packages=find_packages(exclude=["tests", "tests.*"]),
