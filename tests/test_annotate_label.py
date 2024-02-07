@@ -1364,3 +1364,96 @@ class AnnotateLabelTest(PyxformTestCase):
             xml_not_contains=["[custom label: custom annotation content]"],
             annotate=["all"],
         )
+
+    def test_annotated_label__custom_annotation_label_start_with_underscore_error(self):
+        """Test annotated label for item with custom annotation label start with underscore."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                                   |             |                                              |
+            |        | type      | name                              | label       | bind::oc:oc_annotation__cusTom_AnNotation_v1 |
+            |        | text      | text_with_custom_annotation_label | Text label: | custom annotation content                    |
+            """,
+            annotate=["all"],
+            errored=True,
+            error__contains=[
+                "Custom annotation labels must start with a letter or digit."
+            ],
+        )
+
+    def test_annotated_label__custom_annotation_label_start_with_hyphen_error(self):
+        """Test annotated label for item with custom annotation label start with hyphen."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                                   |             |                                              |
+            |        | type      | name                              | label       | bind::oc:oc_annotation_-cusTom_AnNotation_v1 |
+            |        | text      | text_with_custom_annotation_label | Text label: | custom annotation content                    |
+            """,
+            annotate=["all"],
+            errored=True,
+            error__contains=[
+                "Custom annotation labels must start with a letter or digit."
+            ],
+        )
+
+    def test_annotated_label__custom_annotation_label_contains_apostrophes_error(self):
+        """Test annotated label for item with custom annotation label that contains apostrophes."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                                   |             |                                               |
+            |        | type      | name                              | label       | bind::oc:oc_annotation_cusTom_'AnNotation'_v1 |
+            |        | text      | text_with_custom_annotation_label | Text label: | custom annotation content                     |
+            """,
+            annotate=["all"],
+            errored=True,
+            error__contains=[
+                "Custom annotation labels can only include letters, digits, underscores, and hyphens."
+            ],
+        )
+
+    def test_regular_label__custom_annotation_label_start_with_underscore_error(self):
+        """Test regular label for item with custom annotation label start with underscore."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                                   |             |                                              |
+            |        | type      | name                              | label       | bind::oc:oc_annotation__cusTom_AnNotation_v1 |
+            |        | text      | text_with_custom_annotation_label | Text label: | custom annotation content                    |
+            """,
+            errored=True,
+            error__contains=[
+                "Custom annotation labels must start with a letter or digit."
+            ],
+        )
+
+    def test_regular_label__custom_annotation_label_start_with_hyphen_error(self):
+        """Test regular label for item with custom annotation label start with hyphen."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                                   |             |                                              |
+            |        | type      | name                              | label       | bind::oc:oc_annotation_-cusTom_AnNotation_v1 |
+            |        | text      | text_with_custom_annotation_label | Text label: | custom annotation content                    |
+            """,
+            errored=True,
+            error__contains=[
+                "Custom annotation labels must start with a letter or digit."
+            ],
+        )
+
+    def test_regular_label__custom_annotation_label_contains_apostrophes_error(self):
+        """Test regular label for item with custom annotation label that contains apostrophes."""
+        self.assertPyxformXform(
+            name="data",
+            md="""
+            | survey |           |                                   |             |                                               |
+            |        | type      | name                              | label       | bind::oc:oc_annotation_cusTom_'AnNotation'_v1 |
+            |        | text      | text_with_custom_annotation_label | Text label: | custom annotation content                     |
+            """,
+            errored=True,
+            error__contains=[
+                "Custom annotation labels can only include letters, digits, underscores, and hyphens."
+            ],
+        )

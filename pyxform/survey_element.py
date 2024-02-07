@@ -155,6 +155,8 @@ class SurveyElement(dict):
     # Supported media types for attaching to questions
     SUPPORTED_MEDIA = ("image", "big-image", "audio", "video")
 
+    OC_CUSTOM_ANNOTATION_PREFIX = "oc:oc_annotation_"
+
     def validate(self):
         if not is_valid_xml_tag(self.name):
             invalid_char = re.search(INVALID_XFORM_TAG_REGEXP, self.name)
@@ -484,11 +486,37 @@ class SurveyElement(dict):
             except KeyError:
                 return ""
 
+    def get_custom_annotations(self):
+        custom_annotations = {}
+        custom_annotations = dict(
+            (k, v)
+            for k, v in self.get("bind").items()
+            if k.startswith(self.OC_CUSTOM_ANNOTATION_PREFIX)
+        )
+        return custom_annotations
+
+    def check_custom_annotations(self):
+        custom_annotations = self.get_custom_annotations()
+        if custom_annotations:
+            for key in custom_annotations.keys():
+                custom_annotation_label = key[len(self.OC_CUSTOM_ANNOTATION_PREFIX) :]
+                if custom_annotation_label != "":
+                    # custom_annotation_label should only contains aplhanumeric, underscore, and hypens chars
+                    if not bool(re.match(r"^[A-Za-z0-9_-]+$", custom_annotation_label)):
+                        msg = "Custom annotation labels can only include letters, digits, underscores, and hyphens."
+                        raise PyXFormError(msg)
+                    if not bool(re.match(r"^[A-Za-z0-9]$", custom_annotation_label[0])):
+                        msg = (
+                            "Custom annotation labels must start with a letter or digit."
+                        )
+                        raise PyXFormError(msg)
+
     def get_annotated_label(self, lang=None):
         survey = self.get_root()
         is_annotated = len(self.get_root().annotated_fields) > 0
 
         if not is_annotated:
+            self.check_custom_annotations()
             return self.get_field_or_lang_dict_value(self.label, lang)
         else:
             is_choices = self.parent.type in [
@@ -665,32 +693,17 @@ class SurveyElement(dict):
                     elif annotated_field == "identifier":
                         attr_value = self.get("instance", {}).get("oc:identifier", "")
                     elif annotated_field == "custom":
-                        # Custom annotations
-                        custom_annotation_prefix = "oc:oc_annotation_"
-                        custom_annotations = dict(
-                            (k, v)
-                            for k, v in self.get("bind").items()
-                            if k.startswith(custom_annotation_prefix)
-                        )
+                        # Custom annotations handling
+                        self.check_custom_annotations()
+                        custom_annotations = self.get_custom_annotations()
                         if custom_annotations:
                             for key in custom_annotations.keys():
                                 attr_value = custom_annotations[key]
-                                attr_label = key[len(custom_annotation_prefix) :]
-                                if attr_label != "":
-                                    # attr_label should only contains aplhanumeric, underscore, and hypens chars
-                                    if not bool(
-                                        re.match(r"^[A-Za-z0-9_-]+$", attr_label)
-                                    ):
-                                        msg = "Custom annotation labels can only include letters, digits, underscores, and hyphens."
-                                        raise PyXFormError(msg)
-                                    if not bool(
-                                        re.match(r"^[A-Za-z0-9]$", attr_label[0])
-                                    ):
-                                        msg = "Custom annotation labels must start with a letter or digit."
-                                        raise PyXFormError(msg)
-                                    # Change _ with space in custom annotation label
-                                    if "_" in attr_label:
-                                        attr_label = attr_label.replace("_", " ").strip()
+                                attr_label = key[len(self.OC_CUSTOM_ANNOTATION_PREFIX) :]
+
+                                # Change _ with space in custom annotation label
+                                if attr_label != "" and "_" in attr_label:
+                                    attr_label = attr_label.replace("_", " ").strip()
 
                                 field_annotations[attr_label] = attr_value
 
