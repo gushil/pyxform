@@ -35,19 +35,19 @@ class Question(SurveyElement):
             attributes[key] = survey.insert_xpaths(value, self)
 
         if self.get("default"):
-            if len(survey.annotated_fields) > 0 and "default" in survey.annotated_fields:
+            if survey.is_annotated_form() and "default" in survey.annotated_fields:
                 return node(self.name, **attributes)
             elif not default_is_dynamic(self.default, self.type):
                 return node(self.name, str(self.get("default")), **attributes)
         return node(self.name, **attributes)
 
     def xml_control(self):
-        is_annotated_fields = len(self.get_root().annotated_fields) > 0
-        if (self.type == "calculate" and not (is_annotated_fields)) or (
+        is_annotated_form = self.get_root().is_annotated_form()
+        if (self.type == "calculate" and not is_annotated_form) or (
             (
                 ("calculate" in self.bind or self.trigger)
                 and not (self.label or self.hint)
-                and not is_annotated_fields
+                and not is_annotated_form
             )
         ):
             nested_setvalues = self.get_root().get_setvalues_for_question_name(self.name)
@@ -88,7 +88,7 @@ class Question(SurveyElement):
                 xml_node.appendChild(setvalue_node)
 
     def build_xml(self):
-        if len(self.get_root().annotated_fields) > 0:
+        if self.get_root().is_annotated_form():
             if self.type == "calculate":
                 control_dict = {"tag": "input"}
                 control_dict["ref"] = self.get_xpath()
@@ -215,7 +215,7 @@ class MultipleChoiceQuestion(Question):
         # Annotated form:
         # Remove the ‘autocomplete’ appearance from the select element
         # because it causes the options to disappear
-        if len(survey.annotated_fields) > 0:
+        if survey.is_annotated_form():
             if (
                 isinstance(control_dict.get("appearance"), str)
                 and "autocomplete" in control_dict.get("appearance").split()
@@ -273,7 +273,7 @@ class MultipleChoiceQuestion(Question):
             choice_filter = survey.insert_xpaths(
                 choice_filter, self, True, is_previous_question
             )
-            if choice_filter != "true()" and len(survey.annotated_fields) > 0:
+            if choice_filter != "true()" and survey.is_annotated_form():
                 choice_filter = "true()"
             if is_previous_question:
                 path = (

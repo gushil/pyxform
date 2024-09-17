@@ -230,6 +230,9 @@ class Survey(Section):
 
         return NSMAP
 
+    def is_annotated_form(self):
+        return len(self.annotated_fields) > 0
+
     def xml(self):
         """
         calls necessary preparation methods, then returns the xml.
@@ -246,21 +249,20 @@ class Survey(Section):
             # try to resolve reference and fail if can't
             self.insert_xpaths(triggering_reference, self)
 
-        is_annotated_form = len(self.annotated_fields) > 0
         body_kwargs = {}
         if hasattr(self, constants.STYLE) and getattr(self, constants.STYLE):
             body_kwargs["class"] = getattr(self, constants.STYLE)
 
             # Append 'no-text-transform' style into existing style for annotated form
             if (
-                is_annotated_form
+                self.is_annotated_form()
                 and constants.STYLE_NO_TEXT_TRANSFORM not in body_kwargs["class"]
             ):
                 if len(body_kwargs["class"]) > 0:
                     body_kwargs["class"] += " "
                 body_kwargs["class"] += constants.STYLE_NO_TEXT_TRANSFORM
         else:
-            if is_annotated_form:
+            if self.is_annotated_form():
                 # Assign 'no-text-transform' style into existing style for annotated form
                 body_kwargs["class"] = constants.STYLE_NO_TEXT_TRANSFORM
 
@@ -523,7 +525,7 @@ class Survey(Section):
 
         # Append last so the choice instance is excluded on a name clash.
         for name, value in self.choices.items():
-            if len(self.annotated_fields) > 0:
+            if self.is_annotated_form():
                 for choice in value:
                     for choice_item_name, choice_item_value in choice.items():
                         if choice_item_name == "label" and "name" in choice:
@@ -705,7 +707,7 @@ class Survey(Section):
                 for name, choice_value in choice.items():
                     itext_id = "-".join([list_name, str(idx)])
                     if isinstance(choice_value, dict):
-                        if len(self.annotated_fields) > 0 and "name" in choice:
+                        if self.is_annotated_form() and "name" in choice:
                             choice_value = {
                                 lang: "{} [{}]".format(value, choice.get("name"))
                                 for lang, value in choice_value.items()

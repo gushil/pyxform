@@ -386,7 +386,7 @@ class SurveyElement(dict):
             or not default_is_dynamic(self.default, self.type)
             or (
                 default_is_dynamic(self.default, self.type)
-                and len(survey.annotated_fields) > 0
+                and survey.is_annotated_form()
                 and "default" in survey.annotated_fields
             )
         ):
@@ -513,9 +513,8 @@ class SurveyElement(dict):
 
     def get_annotated_label(self, lang=None):
         survey = self.get_root()
-        is_annotated = len(self.get_root().annotated_fields) > 0
 
-        if not is_annotated:
+        if not survey.is_annotated_form():
             self.check_custom_annotations()
             return self.get_field_or_lang_dict_value(self.label, lang)
         else:
@@ -782,7 +781,7 @@ class SurveyElement(dict):
         if (
             self.label
             or self.media
-            or (len(self.get_root().annotated_fields) > 0 and self.type == "calculate")
+            or (self.get_root().is_annotated_form() and self.type == "calculate")
         ):
             result.append(self.xml_label())
             label_appended = True
@@ -823,7 +822,7 @@ class SurveyElement(dict):
                 del bind_dict["calculate"]
 
             # Annotated form bind handling
-            if len(survey.annotated_fields) > 0:
+            if survey.is_annotated_form():
                 # Do not include "relevant" binding in annotated form
                 if "relevant" in survey.annotated_fields and "relevant" in self.bind:
                     return None
