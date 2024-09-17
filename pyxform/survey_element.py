@@ -792,7 +792,7 @@ class SurveyElement(dict):
             result.append(self.xml_hint())
 
         msg = "The survey element named '%s' " "has no label or hint." % self.name
-        if len(result) == 0:
+        if len(result) == 0 and not self.get_root().is_annotated_form():
             raise PyXFormError(msg)
 
         # Guidance hint alone is not OK since they may be hidden by default.
