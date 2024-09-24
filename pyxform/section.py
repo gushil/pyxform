@@ -73,10 +73,9 @@ class Section(SurveyElement):
         return result
 
     def generate_annotate_appearance(self):
-        survey = self.get_root()
         control_dict = self.control.copy()
         annotate_appearance = ""
-        if len(survey.annotated_fields) > 0:
+        if self.get_root().is_annotated_form():
             if constants.APPEARANCE in control_dict:
                 annotate_appearance = control_dict[constants.APPEARANCE]
                 # Append 'no-collapse' style into existing appearance for annotated form
@@ -108,7 +107,7 @@ class Section(SurveyElement):
         Ideally, we'll have groups up and rolling soon, but for now
         let's just yield controls from all the children of this section
         """
-        if len(self.get_root().annotated_fields) > 0:
+        if self.get_root().is_annotated_form():
             calculate_children = filter(lambda c: c.type == "calculate", self.children)
             non_calculate_children = filter(
                 lambda c: c.type != "calculate", self.children
