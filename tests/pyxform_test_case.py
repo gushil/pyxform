@@ -135,8 +135,14 @@ class PyxformMarkdown:
             calculate_nodes = extract_calculate_elements(imported_survey_json)
             meta_node_index = get_meta_node_index(imported_survey_json)
             for idx, calculate_node in enumerate(calculate_nodes):
+                group_calculate_node = {
+                    "type": "group",
+                    "name": f"calculate_group_{idx}",
+                    "label": f"Calculate Group {idx}",
+                    "children": [calculate_node],
+                }
                 imported_survey_json["children"].insert(
-                    meta_node_index + idx, calculate_node
+                    meta_node_index + idx, group_calculate_node
                 )
 
         # ideally, when all these tests are working, this would be

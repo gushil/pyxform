@@ -8,7 +8,6 @@ import json
 import logging
 import os
 from os.path import splitext
-
 from pyxform import builder, xls2json
 from pyxform.utils import (
     extract_calculate_elements,
@@ -48,7 +47,13 @@ def xls2xform_convert(
         calculate_nodes = extract_calculate_elements(json_survey)
         meta_node_index = get_meta_node_index(json_survey)
         for idx, calculate_node in enumerate(calculate_nodes):
-            json_survey["children"].insert(meta_node_index + idx, calculate_node)
+            group_calculate_node = {
+                "type": "group",
+                "name": f"calculate_group_{idx}",
+                "label": f"Calculate Group {idx}",
+                "children": [calculate_node],
+            }
+            json_survey["children"].insert(meta_node_index + idx, group_calculate_node)
 
     survey = builder.create_survey_element_from_dict(json_survey)
     # Setting validate to false will cause the form not to be processed by

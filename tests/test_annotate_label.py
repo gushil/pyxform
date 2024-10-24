@@ -873,14 +873,14 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | date      | date_visit     | Date of visit: |               | yes      |          |
             """,
             xml__contains=[
-                '<input ref="/data/calculate_type">',
+                '<input ref="/data/calculate_group_0/calculate_type">',
                 'style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 2+3]&lt;/span&gt;</label>',
             ],
             annotate=["all"],
         )
 
     def test_annotated_label__calculation_type_in_group(self):
-        """Test annotated label for calculation type item in group should be extracted out of group and appended in the end of form"""
+        """Test annotated label for calculation type item in group should be extracted out of group and appended in the end of form as new group for each item"""
         self.assertPyxformXform(
             name="data",
             md="""
@@ -894,8 +894,8 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | end group    |                  |                |               |          |          |
             """,
             xml__contains=[
-                '<input ref="/data/calculate_type_1">',
-                '<input ref="/data/calculate_type_2">',
+                '<input ref="/data/calculate_group_0/calculate_type_1">',
+                '<input ref="/data/calculate_group_1/calculate_type_2">',
                 'style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 2+3]&lt;/span&gt;</label>',
                 'style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: deepskyblue"&gt; [Default: 1+1]&lt;/span&gt;</label>',
             ],
@@ -903,7 +903,7 @@ class AnnotateLabelTest(PyxformTestCase):
         )
 
     def test_annotated_label__calculation_type_in_multiple_group(self):
-        """Test annotated label for calculation type item in multiple group should be extracted out of group and appended in the end of form"""
+        """Test annotated label for calculation type item in multiple group should be extracted out of group and appended in the end of form as new group for each item"""
         self.assertPyxformXform(
             name="data",
             md="""
@@ -921,9 +921,9 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | end group    |                         |                |               |          |          |
             """,
             xml__contains=[
-                '<input ref="/data/calculate_type_no_group">',
-                '<input ref="/data/calculate_type_group_1">',
-                '<input ref="/data/calculate_type_group_2">',
+                '<input ref="/data/calculate_group_0/calculate_type_no_group">',
+                '<input ref="/data/calculate_group_1/calculate_type_group_1">',
+                '<input ref="/data/calculate_group_2/calculate_type_group_2">',
                 'style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 1+2]&lt;/span&gt;</label>',
                 'style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 2+3]&lt;/span&gt;</label>',
                 'style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: deepskyblue"&gt; [Default: 1+1]&lt;/span&gt;</label>',
@@ -944,9 +944,9 @@ class AnnotateLabelTest(PyxformTestCase):
             |        | date      | date_visit       | Date of visit: | IG_2               | yes         |
             """,
             xml__contains=[
-                '<input ref="/data/calculate_type_1">',
+                '<input ref="/data/calculate_group_0/calculate_type_1">',
                 '&lt;span style="color: orangered"&gt; [Name: calculate\_type\_1]&lt;/span&gt;&lt;span style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: blue"&gt; [Item Group: IG\_1]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 1+1]&lt;/span&gt;</label>',  # noqa
-                '<input ref="/data/calculate_type_2">',
+                '<input ref="/data/calculate_group_1/calculate_type_2">',
                 '&lt;span style="color: orangered"&gt; [Name: calculate\_type\_2]&lt;/span&gt;&lt;span style="color: black"&gt; [Type: calculate]&lt;/span&gt;&lt;span style="color: blue"&gt; [Item Group: IG\_2]&lt;/span&gt;&lt;span style="color: maroon"&gt; [Calculation: 2+3]&lt;/span&gt;</label>',  # noqa
             ],
             annotate=["all"],
@@ -1034,7 +1034,7 @@ class AnnotateLabelTest(PyxformTestCase):
         )
 
     def test_annotated_label__repeat_count_style(self):
-        """Test annotated label style for repeat item with repeat_count."""
+        """Test annotated label style for repeat item with repeat_count"""
         self.assertPyxformXform(
             name="data",
             md="""
