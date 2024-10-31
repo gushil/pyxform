@@ -665,18 +665,39 @@ class SurveyElement(dict):
                             self.get("media", {}).get("audio", ""), lang
                         )
                     elif annotated_field == "repeat_count" and self.type == "repeat":
+                        # Repeat count could be in the top level children or in a group
+                        repeat_count_name = f"{self.name}_count"
+
+                        # Search in top-level children
                         repeat_count_model = next(
-                            filter(
-                                lambda x: x["name"] == self.name + "_count",
-                                survey.children,
+                            (
+                                child
+                                for child in survey.children
+                                if child["name"] == repeat_count_name
                             ),
                             None,
                         )
-                        if repeat_count_model is not None:
+
+                        # If not found, search in group children
+                        if repeat_count_model is None:
+                            for survey_child in survey.children:
+                                if survey_child["type"] == "group":
+                                    repeat_count_model = next(
+                                        (
+                                            child
+                                            for child in survey_child.children
+                                            if child["name"] == repeat_count_name
+                                        ),
+                                        None,
+                                    )
+                                    if repeat_count_model:
+                                        break
+
+                        if repeat_count_model:
                             attr_value = repeat_count_model.get("bind", {}).get(
                                 "calculate", ""
                             )
-                            if attr_value != "":
+                            if attr_value:
                                 attr_label = constants.ANNOTATE_REPEAT_COUNT
                     elif annotated_field == "external":
                         attr_value = self.get("bind", {}).get("oc:external", "")
